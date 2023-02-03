@@ -1,10 +1,13 @@
-This folder contains a simple made-up data-set in an Excel file.
+This folder contains data accessed from data.cms.gov (https://data.cms.gov/provider-data/archived-data/nursing-homes). 
 
-It contains the variables `Height`, `Weight` and `Gender` of a few imaginary individuals.
+Data were downloaded from the February release of 2023 Annual Files. 
+We included NH_ProviderInfo. This table provides one row for each nursing home in the Untied States and contains aggregate summary information. 
 
-The dataset purposefully contains some faulty entries that need to be cleaned.
+The Skilled_Nursing_Facility_Quality_Reporting_Program_Provider_Data includes metrics collected by CMS. 
 
-Generally, any dataset should contain some meta-data explaining what each variable in the dataset is. (This is often called a **Codebook**.) For this simple example, the codebook is given as a second sheet in the Excel file.
+These datasets are linkable on provider identification number. 
+
+The data dictionary is attached in a pdf form. 
 
 This raw data-set should generally not be edited by hand. It should instead be loaded and processed/cleaned using code.
 

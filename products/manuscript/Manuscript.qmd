@@ -1,7 +1,7 @@
 ---
-title: "Example Manuscript Template for a Data Analysis Project"
+title: "Evaluating Staffing Characteristics, Healthcare-associated Infections, and Provider Characteristics in U.S. Nursing Homes, 2021"
 subtitle: ""
-author: Andreas Handel
+author: Kelly Hatfield
 date: "`r Sys.Date()`"
 format:
   docx:
@@ -11,6 +11,31 @@ format:
 bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
 ---
+
+Part 1: Project Overview
+
+Data Overview
+      
+      For this project I will utilize data collected and aggregated by the Centers for Medicare Services (CMS) for all CMS certified nursing homes throughout the United States. The data are accessed here: https://data.cms.gov/provider-data/archived-data/nursing-homes. There are approximately 15,000 CMS certified nursing homes throughout the US, so we will have a large geographically diverse population to study. 
+
+For this analysis I will be combining two files: 
+      
+      The provider information file contains general information on currently active nursing homes, including number of certified beds, quality measure scores, staffing and other information used in the Five-Star Rating System. Data are presented as one row per nursing home. 
+    
+    The second file will contain data aggreated for the Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare Website. 
+      
+      Detailed infromation about the various QRP metrics can be found on CMS technical appendix page: https://www.cms.gov/Medicare/Quality-Initiatives- Patient-Assessment-Instruments/NursingHomeQualityInits/Skilled-Nursing-Facility-Quality-Reporting- Program/SNF-Quality-Reporting-Program-Measures-and-Technical-Information. 
+     
+      The primary QRP metric of interest for this study will be S_039_01: Percentage of  patients who acquired a healthcare-associated infection during their SNF stay that resulted in hospitalization. This metric is derived entirely from fee-for-service Medicare claims data and relatively new, as it has only been publicly reported since late 2022.  This percentage is shown both as the observed rate and as the risk standardized rate. CMS also reports if this rate is as expected, significantly worse than expected, or significantly better compared to all other nursing homes in that time period. 
+  
+Data Analysis
+      
+      The prposed study aims to assess various nursing home characteristics for association with healthcare-associated infection rates. 
+      
+      First, we will provide a descriptive analysis of nursing homes across the United States including location, bed size, ownership, average number of residents per day. Specifically of interest, we will also describe variability in overall quality ratings, the healthcare-associated infection quality reporting measure, and measures of staffing (including various levels of nursing care (i.e., RN, LPN, and aide)  both aggregated and separately). 
+      Second, we will utilize ANOVA methods to determine which, if any,  average staffing characteristics are associated with the classifications of HAI rates as “better”, “worse”, or “as expected”.  
+      Third, we will assess a variety of nursing home characteristics and selected staffing measures for associations with  the risk adjusted rate of HAIs in the nursing home. 
+      
 
 The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. 
 You don't need to have exactly these sections, but the content covering those sections should be addressed.
