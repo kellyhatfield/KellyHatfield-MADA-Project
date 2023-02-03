@@ -1,3 +1,12 @@
+#Modifications
+
+We are modifying this template to conduct a data analysis project assessing various nursing home characteristics with each nursing home's rate of healthcare associated infections. We will utilize two publicly available datasets for this analysis. 
+
+For more information and project part 1 - see manuscript file. 
+
+
+
+
 # Overview
 
 A template file and folder structure for a data analysis project/paper done with R/Quarto/Github. 
