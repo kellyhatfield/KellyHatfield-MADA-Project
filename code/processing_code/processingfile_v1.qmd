@@ -1,143 +1,112 @@
 ---
-title: "An example cleaning script"
-author: "Andreas Handel"
-date: "2023-01-03"
+title: "Cleaning Script"
+author: "Kelly Hatfield"
+date: "2023-02-23"
 output: html_document
 ---
 
-
 # Processing script
 
-This contains the same code and comments/information as `processingcode.R`.
-
-This just shows it as Quarto file, to give you an idea how to do it in a setup that combines code and text in a single file.
-
-See the other Quarto file for my currently preferred approach of pulling code from the R script into the Quarto file.
-
+This code contains script to load and process/clean the data.
 
 # Setup
 
 Load needed packages. make sure they are installed.
 
 ```{r}
-library(readxl) #for loading Excel files
+
 library(dplyr) #for data processing/cleaning
 library(tidyr) #for data processing/cleaning
 library(skimr) #for nice visualization of data 
 library(here) #to set paths
+library (tidyverse) #for data processing/cleaning
+library(readr)
 ```
 
-
 # Data loading
-
-Note that for functions that come from specific packages (instead of base R), I often specify both package and function like so:
-package::function() that's not required one could just call the function specifying the package makes it clearer where the function "lives",
-but it adds typing. You can do it either way.
 
 ```{r}
 # path to data
 # note the use of the here() package and not absolute paths
-data_location <- here::here("data","raw_data","exampledata.xlsx")
-rawdata <- readxl::read_excel(data_location)
-```
+provider_location <- here::here("data","raw_data","NH_ProviderInfo_Jan2023.csv")
+raw_provider <- read.csv(provider_location)
 
+
+
+quality_location <- here::here("data","raw_data","CMS Nursing Home HAI039.csv")
+raw_quality <- read_csv(quality_location)
+View(raw_quality)
+ls(raw_quality)
+
+
+
+```
 
 # Check data
 
-First we can look at the codebook
+Several ways of looking at the data. Lets start wtih a glimpse of the provider data.
 
 ```{r}
-codebook <- readxl::read_excel(data_location, sheet ="Codebook")
-print(codebook)
+dplyr::glimpse(raw_provider)
+
+
 ```
-
-
-Several ways of looking at the data
-
-```{r}
-dplyr::glimpse(rawdata)
-summary(rawdata)
-head(rawdata)
-skimr::skim(rawdata)
-```
-
-
 
 # Cleaning
 
-By inspecting the data as done above, we find some problems that need addressing:
-
-First, there is an entry for height which says "sixty" instead of a number. 
-Does that mean it should be a numeric 60? It somehow doesn't make sense since the weight is 60kg, which can't happen for a 60cm person (a baby).
-Since we don't know how to fix this, we might decide to remove the person. This "sixty" entry also turned all Height entries into characters instead of numeric. That conversion to character also means that our summary function isn't very meaningful. So let's fix that first.
+There are a lot of variables and observations in this dataset. We want to subset to just the variables of interest, first.
 
 ```{r}
-d1 <- rawdata %>% dplyr::filter( Height != "sixty" ) %>% 
-                  dplyr::mutate(Height = as.numeric(Height))
-skimr::skim(d1)
-hist(d1$Height)
+raw_provider1 <- raw_provider[c("Federal.Provider.Number", "Average.Number.of.Residents.per.Day",
+                   "Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day",
+                   "Staffing.Rating", "Provider.State",   "Ownership.Type")]
+skim(raw_provider1)
+
 ```
 
-Now we see that there is one person with a height of 6. That could be a typo, or someone mistakenly entered their height in feet. Since we unfortunately don't know, we might need to remove this person, which we'll do here.
+We see a spattering of missing values throughout the dataset with the majority of missing values for total staffing per resident per day. However for a dataset of over 15,000 it is mostly complete. We will leave in the missing values until we select which variables we will incorporate into our model.
+
+Next, we need to explore the quality metric data.
 
 ```{r}
-d2 <- d1 %>% dplyr::mutate( Height = replace(Height, Height=="6",round(6*30.48,0)) )
-skimr::skim(d2)
+#Observe Variable Names
+ls(raw_quality)
+skim(raw_quality)
 ```
 
-Height values seem ok now.
-
-Now let's look at the `Weight` variable. There is a person with weight of 7000, which is impossible, and one person with missing weight.
-To be able to analyze the data, we'll remove those individuals as well.
+We know from our data gathering phase that nursing homes that didn't have enough eligible residents for measure calculation would not have a HAI measure calculated. We see 3,209 of those cases are missing here. We will exclude them from our analysis. Also, we can get rid of the unnecessary variables too.
 
 ```{r}
-d3 <- d2 %>%  dplyr::filter(Weight != 7000) %>% tidyr::drop_na()
-skimr::skim(d3)
+
+raw_quality1 <- raw_quality %>% 
+  select (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate) 
+         
+skim(raw_quality1)
 ```
 
-Now checking the `Gender` variable. Gender should be a categorical/factor variable but is loaded as character. We can fix that with simple base R code to mix things up.
+Now we have no more missing in the quality metrics!
+
+Finally, we need to merge these datasets together. The common identifer variable is the CCN. But we will need to rename the variable from the provider table first. Then, get rid of the nursing homes with no HAI quality measures.
 
 ```{r}
-d3$Gender <- as.factor(d3$Gender)  
-skimr::skim(d3)
+raw_provider2 <- raw_provider1 %>% rename(cms_certification_number_ccn="Federal.Provider.Number")
+
+raw_combined <- merge(raw_provider2, raw_quality1, by = "cms_certification_number_ccn")
+
+raw_combined2 <- raw_combined %>% filter(!is.na(HAI_039_Observed))
 ```
 
-
-Now we see that there is another NA, but it's not `NA` from R, instead it was loaded as character and is now considered as a category.
-Well proceed here by removing that individual with that NA entry. Since this keeps an empty category for Gender, I'm also using droplevels() to get rid of it.
-
-```{r}
-d4 <- d3 %>% dplyr::filter( !(Gender %in% c("NA","N")) ) %>% droplevels()
-skimr::skim(d4)
-```
-
-
-All done, data is clean now. 
+All done, data is clean now.
 
 Let's assign at the end to some final variable, this makes it easier to add further cleaning steps above.
 
 ```{r}
-processeddata <- d4
+processeddata <- raw_combined2
 ```
 
-
-# Save data 
-
-Finally, we save the clean data as RDS file. I suggest you save your processed and cleaned data as RDS or RDA/Rdata files. 
-This preserves coding like factors, characters, numeric, etc.  If you save as CSV, that information would get lost.
-However, CSV is better for sharing with others since it's plain text. If you do CSV, you might want to write down somewhere what each variable is.
-
-See here for some suggestions on how to store your processed data:
-http://www.sthda.com/english/wiki/saving-data-into-r-data-format-rds-and-rdata
+# Save data
 
 ```{r}
 save_data_location <- here::here("data","processed_data","processeddata.rds")
 saveRDS(processeddata, file = save_data_location)
 ```
-
-
-
-# Notes
-
-Removing anyone who had "faulty" or missing data is one approach. It's often not the best. based on your question and your analysis approach, you might want to do cleaning differently (e.g. keep individuals with some missing information).
-

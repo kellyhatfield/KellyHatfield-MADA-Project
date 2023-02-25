@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.313">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Andreas Handel">
-<meta name="dcterms.date" content="2023-01-03">
+<meta name="author" content="Kelly Hatfield">
+<meta name="dcterms.date" content="2023-02-23">
 
-<title>An example cleaning script</title>
+<title>Cleaning Script</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,7 +110,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">An example cleaning script</h1>
+<h1 class="title">Cleaning Script</h1>
 </div>
 
 
@@ -120,14 +120,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Andreas Handel </p>
+             <p>Kelly Hatfield </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 3, 2023</p>
+      <p class="date">February 23, 2023</p>
     </div>
   </div>
   
@@ -139,16 +139,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="processing-script" class="level1">
 <h1>Processing script</h1>
-<p>This contains the same code and comments/information as <code>processingcode.R</code>.</p>
-<p>This just shows it as Quarto file, to give you an idea how to do it in a setup that combines code and text in a single file.</p>
-<p>See the other Quarto file for my currently preferred approach of pulling code from the R script into the Quarto file.</p>
+<p>This code contains script to load and process/clean the data.</p>
 </section>
 <section id="setup" class="level1">
 <h1>Setup</h1>
 <p>Load needed packages. make sure they are installed.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) <span class="co">#for loading Excel files</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co">#for data processing/cleaning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co">#for data processing/cleaning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'dplyr'</code></pre>
@@ -167,230 +164,195 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) <span class="co">#for nice visualization of data </span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) <span class="co">#to set paths</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>here() starts at D:/GitHub/andreashandel/dataanalysis-template</code></pre>
+<pre><code>here() starts at /Users/kellymccormickhatfield/Documents/MADA 2023/KellyHatfield-MADA-Project</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span> (tidyverse) <span class="co">#for data processing/cleaning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages
+───────────────────────────────────────
+tidyverse 1.3.2 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ ggplot2 3.4.0     ✔ purrr   1.0.0
+✔ tibble  3.1.8     ✔ stringr 1.5.0
+✔ readr   2.1.3     ✔ forcats 0.5.2
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-loading" class="level1">
 <h1>Data loading</h1>
-<p>Note that for functions that come from specific packages (instead of base R), I often specify both package and function like so: package::function() that’s not required one could just call the function specifying the package makes it clearer where the function “lives”, but it adds typing. You can do it either way.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># path to data</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note the use of the here() package and not absolute paths</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"raw_data"</span>,<span class="st">"exampledata.xlsx"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>rawdata <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(data_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># path to data</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note the use of the here() package and not absolute paths</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>provider_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"raw_data"</span>,<span class="st">"NH_ProviderInfo_Jan2023.csv"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>raw_provider <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(provider_location)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>quality_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"raw_data"</span>,<span class="st">"CMS Nursing Home HAI039.csv"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>raw_quality <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(quality_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 15107 Columns: 20
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(11): cms_certification_number_ccn, facility_name, address_line_1, city,... dbl
+(8): zip_code, cms_region, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_... lgl
+(1): measure_date_range
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `HAI_039_RS_Rate_2_5` -&gt; `HAI_039_RS_Rate_2_5...18`
+• `HAI_039_RS_Rate_2_5` -&gt; `HAI_039_RS_Rate_2_5...19`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(raw_quality)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(raw_quality)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "address_line_1"               "city"                        
+ [3] "cms_certification_number_ccn" "cms_region"                  
+ [5] "COMP_PERF"                    "county_name"                 
+ [7] "end_date"                     "facility_name"               
+ [9] "HAI_039_Denominator"          "HAI_039_Obs_Rate"            
+[11] "HAI_039_Observed"             "HAI_039_RS_Rate"             
+[13] "HAI_039_RS_Rate_2_5...18"     "HAI_039_RS_Rate_2_5...19"    
+[15] "location1"                    "measure_date_range"          
+[17] "phone_number"                 "start_date"                  
+[19] "state"                        "zip_code"                    </code></pre>
+</div>
 </div>
 </section>
 <section id="check-data" class="level1">
 <h1>Check data</h1>
-<p>First we can look at the codebook</p>
+<p>Several ways of looking at the data. Lets start wtih a glimpse of the provider data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>codebook <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(data_location, <span class="at">sheet =</span><span class="st">"Codebook"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(codebook)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(raw_provider)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  `Variable Name` `Variable Definition`                 `Allowed Values`      
-  &lt;chr&gt;           &lt;chr&gt;                                 &lt;chr&gt;                 
-1 Height          height in centimeters                 numeric value &gt;0 or NA
-2 Weight          weight in kilograms                   numeric value &gt;0 or NA
-3 Gender          identified gender (male/female/other) M/F/O/NA              </code></pre>
-</div>
-</div>
-<p>Several ways of looking at the data</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(rawdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 14
-Columns: 3
-$ Height &lt;chr&gt; "180", "175", "sixty", "178", "192", "6", "156", "166", "155", …
-$ Weight &lt;dbl&gt; 80, 70, 60, 76, 90, 55, 90, 110, 54, 7000, NA, 45, 55, 50
-$ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F", "M…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(rawdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    Height              Weight          Gender         
- Length:14          Min.   :  45.0   Length:14         
- Class :character   1st Qu.:  55.0   Class :character  
- Mode  :character   Median :  70.0   Mode  :character  
-                    Mean   : 602.7                     
-                    3rd Qu.:  90.0                     
-                    Max.   :7000.0                     
-                    NA's   :1                          </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rawdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Height Weight Gender
-  &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt; 
-1 180        80 M     
-2 175        70 O     
-3 sixty      60 F     
-4 178        76 F     
-5 192        90 NA    
-6 6          55 F     </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(rawdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">rawdata</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">14</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Gender</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
-<col style="width: 10%">
-<col style="width: 3%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.93</td>
-<td style="text-align: right;">602.69</td>
-<td style="text-align: right;">1922.25</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: right;">70</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">7000</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-</tbody>
-</table>
+<pre><code>Rows: 15,107
+Columns: 95
+$ Federal.Provider.Number                                               &lt;chr&gt; …
+$ Provider.Name                                                         &lt;chr&gt; …
+$ Provider.Address                                                      &lt;chr&gt; …
+$ Provider.City                                                         &lt;chr&gt; …
+$ Provider.State                                                        &lt;chr&gt; …
+$ Provider.Zip.Code                                                     &lt;int&gt; …
+$ Provider.Phone.Number                                                 &lt;dbl&gt; …
+$ Provider.SSA.County.Code                                              &lt;int&gt; …
+$ Provider.County.Name                                                  &lt;chr&gt; …
+$ Ownership.Type                                                        &lt;chr&gt; …
+$ Number.of.Certified.Beds                                              &lt;int&gt; …
+$ Average.Number.of.Residents.per.Day                                   &lt;dbl&gt; …
+$ Average.Number.of.Residents.per.Day.Footnote                          &lt;int&gt; …
+$ Provider.Type                                                         &lt;chr&gt; …
+$ Provider.Resides.in.Hospital                                          &lt;chr&gt; …
+$ Legal.Business.Name                                                   &lt;chr&gt; …
+$ Date.First.Approved.to.Provide.Medicare.and.Medicaid.Services         &lt;chr&gt; …
+$ Continuing.Care.Retirement.Community                                  &lt;chr&gt; …
+$ Special.Focus.Status                                                  &lt;chr&gt; …
+$ Abuse.Icon                                                            &lt;chr&gt; …
+$ Most.Recent.Health.Inspection.More.Than.2.Years.Ago                   &lt;chr&gt; …
+$ Provider.Changed.Ownership.in.Last.12.Months                          &lt;chr&gt; …
+$ With.a.Resident.and.Family.Council                                    &lt;chr&gt; …
+$ Automatic.Sprinkler.Systems.in.All.Required.Areas                     &lt;chr&gt; …
+$ Overall.Rating                                                        &lt;int&gt; …
+$ Overall.Rating.Footnote                                               &lt;int&gt; …
+$ Health.Inspection.Rating                                              &lt;int&gt; …
+$ Health.Inspection.Rating.Footnote                                     &lt;int&gt; …
+$ QM.Rating                                                             &lt;int&gt; …
+$ QM.Rating.Footnote                                                    &lt;int&gt; …
+$ Long.Stay.QM.Rating                                                   &lt;int&gt; …
+$ Long.Stay.QM.Rating.Footnote                                          &lt;int&gt; …
+$ Short.Stay.QM.Rating                                                  &lt;int&gt; …
+$ Short.Stay.QM.Rating.Footnote                                         &lt;int&gt; …
+$ Staffing.Rating                                                       &lt;int&gt; …
+$ Staffing.Rating.Footnote                                              &lt;int&gt; …
+$ Reported.Staffing.Footnote                                            &lt;int&gt; …
+$ Physical.Therapist.Staffing.Footnote                                  &lt;int&gt; …
+$ Reported.Nurse.Aide.Staffing.Hours.per.Resident.per.Day               &lt;dbl&gt; …
+$ Reported.LPN.Staffing.Hours.per.Resident.per.Day                      &lt;dbl&gt; …
+$ Reported.RN.Staffing.Hours.per.Resident.per.Day                       &lt;dbl&gt; …
+$ Reported.Licensed.Staffing.Hours.per.Resident.per.Day                 &lt;dbl&gt; …
+$ Reported.Total.Nurse.Staffing.Hours.per.Resident.per.Day              &lt;dbl&gt; …
+$ Total.number.of.nurse.staff.hours.per.resident.per.day.on.the.weekend &lt;dbl&gt; …
+$ Registered.Nurse.hours.per.resident.per.day.on.the.weekend            &lt;dbl&gt; …
+$ Reported.Physical.Therapist.Staffing.Hours.per.Resident.Per.Day       &lt;dbl&gt; …
+$ Total.nursing.staff.turnover                                          &lt;dbl&gt; …
+$ Total.nursing.staff.turnover.footnote                                 &lt;int&gt; …
+$ Registered.Nurse.turnover                                             &lt;dbl&gt; …
+$ Registered.Nurse.turnover.footnote                                    &lt;int&gt; …
+$ Number.of.administrators.who.have.left.the.nursing.home               &lt;int&gt; …
+$ Administrator.turnover.footnote                                       &lt;int&gt; …
+$ Case.Mix.Nurse.Aide.Staffing.Hours.per.Resident.per.Day               &lt;dbl&gt; …
+$ Case.Mix.LPN.Staffing.Hours.per.Resident.per.Day                      &lt;dbl&gt; …
+$ Case.Mix.RN.Staffing.Hours.per.Resident.per.Day                       &lt;dbl&gt; …
+$ Case.Mix.Total.Nurse.Staffing.Hours.per.Resident.per.Day              &lt;dbl&gt; …
+$ Adjusted.Nurse.Aide.Staffing.Hours.per.Resident.per.Day               &lt;dbl&gt; …
+$ Adjusted.LPN.Staffing.Hours.per.Resident.per.Day                      &lt;dbl&gt; …
+$ Adjusted.RN.Staffing.Hours.per.Resident.per.Day                       &lt;dbl&gt; …
+$ Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day              &lt;dbl&gt; …
+$ Adjusted.Weekend.Total.Nurse.Staffing.Hours.per.Resident.per.Day      &lt;dbl&gt; …
+$ Rating.Cycle.1.Standard.Survey.Health.Date                            &lt;chr&gt; …
+$ Rating.Cycle.1.Total.Number.of.Health.Deficiencies                    &lt;chr&gt; …
+$ Rating.Cycle.1.Number.of.Standard.Health.Deficiencies                 &lt;chr&gt; …
+$ Rating.Cycle.1.Number.of.Complaint.Health.Deficiencies                &lt;chr&gt; …
+$ Rating.Cycle.1.Health.Deficiency.Score                                &lt;chr&gt; …
+$ Rating.Cycle.1.Number.of.Health.Revisits                              &lt;chr&gt; …
+$ Rating.Cycle.1.Health.Revisit.Score                                   &lt;chr&gt; …
+$ Rating.Cycle.1.Total.Health.Score                                     &lt;chr&gt; …
+$ Rating.Cycle.2.Standard.Health.Survey.Date                            &lt;chr&gt; …
+$ Rating.Cycle.2.Total.Number.of.Health.Deficiencies                    &lt;chr&gt; …
+$ Rating.Cycle.2.Number.of.Standard.Health.Deficiencies                 &lt;chr&gt; …
+$ Rating.Cycle.2.Number.of.Complaint.Health.Deficiencies                &lt;chr&gt; …
+$ Rating.Cycle.2.Health.Deficiency.Score                                &lt;chr&gt; …
+$ Rating.Cycle.2.Number.of.Health.Revisits                              &lt;chr&gt; …
+$ Rating.Cycle.2.Health.Revisit.Score                                   &lt;chr&gt; …
+$ Rating.Cycle.2.Total.Health.Score                                     &lt;chr&gt; …
+$ Rating.Cycle.3.Standard.Health.Survey.Date                            &lt;chr&gt; …
+$ Rating.Cycle.3.Total.Number.of.Health.Deficiencies                    &lt;chr&gt; …
+$ Rating.Cycle.3.Number.of.Standard.Health.Deficiencies                 &lt;chr&gt; …
+$ Rating.Cycle.3.Number.of.Complaint.Health.Deficiencies                &lt;chr&gt; …
+$ Rating.Cycle.3.Health.Deficiency.Score                                &lt;chr&gt; …
+$ Rating.Cycle.3.Number.of.Health.Revisits                              &lt;chr&gt; …
+$ Rating.Cycle.3.Health.Revisit.Score                                   &lt;chr&gt; …
+$ Rating.Cycle.3.Total.Health.Score                                     &lt;chr&gt; …
+$ Total.Weighted.Health.Survey.Score                                    &lt;dbl&gt; …
+$ Number.of.Facility.Reported.Incidents                                 &lt;int&gt; …
+$ Number.of.Substantiated.Complaints                                    &lt;int&gt; …
+$ Number.of.Citations.from.Infection.Control.Inspections                &lt;int&gt; …
+$ Number.of.Fines                                                       &lt;int&gt; …
+$ Total.Amount.of.Fines.in.Dollars                                      &lt;dbl&gt; …
+$ Number.of.Payment.Denials                                             &lt;int&gt; …
+$ Total.Number.of.Penalties                                             &lt;int&gt; …
+$ Location                                                              &lt;chr&gt; …
+$ Processing.Date                                                       &lt;chr&gt; …</code></pre>
 </div>
 </div>
 </section>
 <section id="cleaning" class="level1">
 <h1>Cleaning</h1>
-<p>By inspecting the data as done above, we find some problems that need addressing:</p>
-<p>First, there is an entry for height which says “sixty” instead of a number. Does that mean it should be a numeric 60? It somehow doesn’t make sense since the weight is 60kg, which can’t happen for a 60cm person (a baby). Since we don’t know how to fix this, we might decide to remove the person. This “sixty” entry also turned all Height entries into characters instead of numeric. That conversion to character also means that our summary function isn’t very meaningful. So let’s fix that first.</p>
+<p>There are a lot of variables and observations in this dataset. We want to subset to just the variables of interest, first.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> rawdata <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>( Height <span class="sc">!=</span> <span class="st">"sixty"</span> ) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Height =</span> <span class="fu">as.numeric</span>(Height))</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(d1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>raw_provider1 <span class="ot">&lt;-</span> raw_provider[<span class="fu">c</span>(<span class="st">"Federal.Provider.Number"</span>, <span class="st">"Average.Number.of.Residents.per.Day"</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Staffing.Rating"</span>, <span class="st">"Provider.State"</span>,   <span class="st">"Ownership.Type"</span>)]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_provider1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Name</td>
-<td style="text-align: left;">d1</td>
+<td style="text-align: left;">raw_provider1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">13</td>
+<td style="text-align: left;">15107</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
+<td style="text-align: left;">6</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">_______________________</td>
@@ -402,11 +364,11 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 </tr>
 <tr class="even">
 <td style="text-align: left;">character</td>
-<td style="text-align: left;">1</td>
+<td style="text-align: left;">3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">numeric</td>
-<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">________________________</td>
@@ -421,485 +383,74 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 <p><strong>Variable type: character</strong></p>
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Gender</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
-<col style="width: 9%">
-<col style="width: 3%">
-<col style="width: 8%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">151.62</td>
-<td style="text-align: right;">46.46</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">154.00</td>
-<td style="text-align: right;">165</td>
-<td style="text-align: right;">175</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: left;">▁▁▁▂▇</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.92</td>
-<td style="text-align: right;">647.92</td>
-<td style="text-align: right;">2000.48</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">54.75</td>
-<td style="text-align: right;">73</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">7000</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(d1<span class="sc">$</span>Height)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="processingfile_v1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Now we see that there is one person with a height of 6. That could be a typo, or someone mistakenly entered their height in feet. Since we unfortunately don’t know, we might need to remove this person, which we’ll do here.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> d1 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>( <span class="at">Height =</span> <span class="fu">replace</span>(Height, Height<span class="sc">==</span><span class="st">"6"</span>,<span class="fu">round</span>(<span class="dv">6</span><span class="sc">*</span><span class="fl">30.48</span>,<span class="dv">0</span>)) )</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(d2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">d2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">13</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Gender</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 12%">
-<col style="width: 16%">
-<col style="width: 8%">
-<col style="width: 9%">
-<col style="width: 4%">
-<col style="width: 8%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.00</td>
-<td style="text-align: right;">165.23</td>
-<td style="text-align: right;">16.52</td>
-<td style="text-align: right;">133</td>
-<td style="text-align: right;">155.00</td>
-<td style="text-align: right;">166</td>
-<td style="text-align: right;">178</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: left;">▂▇▆▆▃</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.92</td>
-<td style="text-align: right;">647.92</td>
-<td style="text-align: right;">2000.48</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">54.75</td>
-<td style="text-align: right;">73</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">7000</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Height values seem ok now.</p>
-<p>Now let’s look at the <code>Weight</code> variable. There is a person with weight of 7000, which is impossible, and one person with missing weight. To be able to analyze the data, we’ll remove those individuals as well.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> d2 <span class="sc">%&gt;%</span>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Weight <span class="sc">!=</span> <span class="dv">7000</span>) <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">drop_na</span>()</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(d3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">d3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">11</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Gender</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">167.09</td>
-<td style="text-align: right;">16.81</td>
-<td style="text-align: right;">133</td>
-<td style="text-align: right;">155.5</td>
-<td style="text-align: right;">166</td>
-<td style="text-align: right;">179</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: left;">▂▇▅▇▅</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">70.45</td>
-<td style="text-align: right;">20.65</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">54.5</td>
-<td style="text-align: right;">70</td>
-<td style="text-align: right;">85</td>
-<td style="text-align: right;">110</td>
-<td style="text-align: left;">▇▂▃▃▂</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Now checking the <code>Gender</code> variable. Gender should be a categorical/factor variable but is loaded as character. We can fix that with simple base R code to mix things up.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d3<span class="sc">$</span>Gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(d3<span class="sc">$</span>Gender)  </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(d3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">d3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">11</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">factor</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: factor</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 10%">
-<col style="width: 11%">
 <col style="width: 29%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 13%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">skim_variable</th>
 <th style="text-align: right;">n_missing</th>
 <th style="text-align: right;">complete_rate</th>
-<th style="text-align: left;">ordered</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
 <th style="text-align: right;">n_unique</th>
-<th style="text-align: left;">top_counts</th>
+<th style="text-align: right;">whitespace</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Gender</td>
+<td style="text-align: left;">Federal.Provider.Number</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">M: 4, F: 3, O: 2, N: 1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15107</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Provider.State</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ownership.Type</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Variable type: numeric</strong></p>
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
+<col style="width: 44%">
 <col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
 <col style="width: 5%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 7%">
+<col style="width: 4%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -918,54 +469,81 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">Average.Number.of.Residents.per.Day</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">78.61</td>
+<td style="text-align: right;">47.49</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">167.09</td>
-<td style="text-align: right;">16.81</td>
-<td style="text-align: right;">133</td>
-<td style="text-align: right;">155.5</td>
-<td style="text-align: right;">166</td>
-<td style="text-align: right;">179</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: left;">▂▇▅▇▅</td>
+<td style="text-align: right;">47.10</td>
+<td style="text-align: right;">70.80</td>
+<td style="text-align: right;">97.90</td>
+<td style="text-align: right;">708.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Weight</td>
+<td style="text-align: left;">Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day</td>
+<td style="text-align: right;">570</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">3.77</td>
+<td style="text-align: right;">0.96</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">3.16</td>
+<td style="text-align: right;">3.63</td>
+<td style="text-align: right;">4.22</td>
+<td style="text-align: right;">12.46</td>
+<td style="text-align: left;">▁▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Staffing.Rating</td>
+<td style="text-align: right;">302</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">2.60</td>
+<td style="text-align: right;">1.34</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">70.45</td>
-<td style="text-align: right;">20.65</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">54.5</td>
-<td style="text-align: right;">70</td>
-<td style="text-align: right;">85</td>
-<td style="text-align: right;">110</td>
-<td style="text-align: left;">▇▂▃▃▂</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: left;">▇▆▆▆▃</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>Now we see that there is another NA, but it’s not <code>NA</code> from R, instead it was loaded as character and is now considered as a category. Well proceed here by removing that individual with that NA entry. Since this keeps an empty category for Gender, I’m also using droplevels() to get rid of it.</p>
+<p>We see a spattering of missing values throughout the dataset with the majority of missing values for total staffing per resident per day. However for a dataset of over 15,000 it is mostly complete. We will leave in the missing values until we select which variables we will incorporate into our model.</p>
+<p>Next, we need to explore the quality metric data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>d4 <span class="ot">&lt;-</span> d3 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>( <span class="sc">!</span>(Gender <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"NA"</span>,<span class="st">"N"</span>)) ) <span class="sc">%&gt;%</span> <span class="fu">droplevels</span>()</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(d4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Observe Variable Names</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(raw_quality)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "address_line_1"               "city"                        
+ [3] "cms_certification_number_ccn" "cms_region"                  
+ [5] "COMP_PERF"                    "county_name"                 
+ [7] "end_date"                     "facility_name"               
+ [9] "HAI_039_Denominator"          "HAI_039_Obs_Rate"            
+[11] "HAI_039_Observed"             "HAI_039_RS_Rate"             
+[13] "HAI_039_RS_Rate_2_5...18"     "HAI_039_RS_Rate_2_5...19"    
+[15] "location1"                    "measure_date_range"          
+[17] "phone_number"                 "start_date"                  
+[19] "state"                        "zip_code"                    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_quality)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Name</td>
-<td style="text-align: left;">d4</td>
+<td style="text-align: left;">raw_quality</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">9</td>
+<td style="text-align: left;">15107</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">3</td>
+<td style="text-align: left;">20</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">_______________________</td>
@@ -976,12 +554,361 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 <td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">logical</td>
 <td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cms_certification_number_ccn</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15107</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">facility_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14889</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">address_line_1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15073</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">city</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5196</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">state</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">county_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1696</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phone_number</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15044</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">start_date</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">end_date</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">location1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15094</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COMP_PERF</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: left;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">measure_date_range</td>
+<td style="text-align: right;">15107</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: left;">:</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">zip_code</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">50331.30</td>
+<td style="text-align: right;">26835.24</td>
+<td style="text-align: right;">660.00</td>
+<td style="text-align: right;">29847.00</td>
+<td style="text-align: right;">48723.00</td>
+<td style="text-align: right;">72942.50</td>
+<td style="text-align: right;">99929.00</td>
+<td style="text-align: left;">▆▇▇▇▅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cms_region</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5.19</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: left;">▃▆▇▃▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HAI_039_Observed</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.50</td>
+<td style="text-align: right;">7.24</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">97.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HAI_039_Obs_Rate</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.91</td>
+<td style="text-align: right;">4.97</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">7.17</td>
+<td style="text-align: right;">10.53</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HAI_039_RS_Rate</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.70</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">3.12</td>
+<td style="text-align: right;">6.41</td>
+<td style="text-align: right;">7.43</td>
+<td style="text-align: right;">8.72</td>
+<td style="text-align: right;">21.66</td>
+<td style="text-align: left;">▅▇▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HAI_039_RS_Rate_2_5…18</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">4.63</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">1.72</td>
+<td style="text-align: right;">3.63</td>
+<td style="text-align: right;">4.34</td>
+<td style="text-align: right;">5.33</td>
+<td style="text-align: right;">14.47</td>
+<td style="text-align: left;">▇▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HAI_039_RS_Rate_2_5…19</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">12.59</td>
+<td style="text-align: right;">2.61</td>
+<td style="text-align: right;">5.05</td>
+<td style="text-align: right;">10.83</td>
+<td style="text-align: right;">12.38</td>
+<td style="text-align: right;">14.12</td>
+<td style="text-align: right;">30.63</td>
+<td style="text-align: left;">▂▇▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HAI_039_Denominator</td>
+<td style="text-align: right;">299</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">82.51</td>
+<td style="text-align: right;">83.90</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">58.00</td>
+<td style="text-align: right;">107.00</td>
+<td style="text-align: right;">1129.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We know from our data gathering phase that nursing homes that didn’t have enough eligible residents for measure calculation would not have a HAI measure calculated. We see 3,209 of those cases are missing here. We will exclude them from our analysis. Also, we can get rid of the unnecessary variables too.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>raw_quality1 <span class="ot">&lt;-</span> raw_quality <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span> (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate) </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_quality1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">raw_quality1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">15107</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">numeric</td>
-<td style="text-align: left;">2</td>
+<td style="text-align: left;">4</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">________________________</td>
@@ -993,51 +920,67 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 </tr>
 </tbody>
 </table>
-<p><strong>Variable type: factor</strong></p>
+<p><strong>Variable type: character</strong></p>
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
+<col style="width: 33%">
 <col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 10%">
 <col style="width: 12%">
-<col style="width: 23%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">skim_variable</th>
 <th style="text-align: right;">n_missing</th>
 <th style="text-align: right;">complete_rate</th>
-<th style="text-align: left;">ordered</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
 <th style="text-align: right;">n_unique</th>
-<th style="text-align: left;">top_counts</th>
+<th style="text-align: right;">whitespace</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Gender</td>
+<td style="text-align: left;">cms_certification_number_ccn</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">M: 4, F: 3, O: 2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15107</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">state</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Variable type: numeric</strong></p>
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
-<col style="width: 7%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 5%">
+<col style="width: 21%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 6%">
+<col style="width: 6%">
 <col style="width: 5%">
 <col style="width: 6%">
+<col style="width: 6%">
 <col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 6%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1056,53 +999,82 @@ $ Gender &lt;chr&gt; "M", "O", "F", "F", "NA", "F", "O", "M", "N", "M", "F", "F"
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Height</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">165.67</td>
-<td style="text-align: right;">15.98</td>
-<td style="text-align: right;">133</td>
-<td style="text-align: right;">156</td>
-<td style="text-align: right;">166</td>
-<td style="text-align: right;">178</td>
-<td style="text-align: right;">183</td>
-<td style="text-align: left;">▂▁▃▃▇</td>
+<td style="text-align: left;">HAI_039_Observed</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.50</td>
+<td style="text-align: right;">7.24</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">97.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">70.11</td>
-<td style="text-align: right;">21.25</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: right;">70</td>
-<td style="text-align: right;">80</td>
-<td style="text-align: right;">110</td>
-<td style="text-align: left;">▇▂▃▂▂</td>
+<td style="text-align: left;">HAI_039_Obs_Rate</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.91</td>
+<td style="text-align: right;">4.97</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">7.17</td>
+<td style="text-align: right;">10.53</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HAI_039_Denominator</td>
+<td style="text-align: right;">299</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">82.51</td>
+<td style="text-align: right;">83.90</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">58.00</td>
+<td style="text-align: right;">107.00</td>
+<td style="text-align: right;">1129.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HAI_039_RS_Rate</td>
+<td style="text-align: right;">3209</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">7.70</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">3.12</td>
+<td style="text-align: right;">6.41</td>
+<td style="text-align: right;">7.43</td>
+<td style="text-align: right;">8.72</td>
+<td style="text-align: right;">21.66</td>
+<td style="text-align: left;">▅▇▁▁▁</td>
 </tr>
 </tbody>
 </table>
 </div>
+</div>
+<p>Now we have no more missing in the quality metrics!</p>
+<p>Finally, we need to merge these datasets together. The common identifer variable is the CCN. But we will need to rename the variable from the provider table first. Then, get rid of the nursing homes with no HAI quality measures.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>raw_provider2 <span class="ot">&lt;-</span> raw_provider1 <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">cms_certification_number_ccn=</span><span class="st">"Federal.Provider.Number"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>raw_combined <span class="ot">&lt;-</span> <span class="fu">merge</span>(raw_provider2, raw_quality1, <span class="at">by =</span> <span class="st">"cms_certification_number_ccn"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>raw_combined2 <span class="ot">&lt;-</span> raw_combined <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HAI_039_Observed))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>All done, data is clean now.</p>
 <p>Let’s assign at the end to some final variable, this makes it easier to add further cleaning steps above.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>processeddata <span class="ot">&lt;-</span> d4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>processeddata <span class="ot">&lt;-</span> raw_combined2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="save-data" class="level1">
 <h1>Save data</h1>
-<p>Finally, we save the clean data as RDS file. I suggest you save your processed and cleaned data as RDS or RDA/Rdata files. This preserves coding like factors, characters, numeric, etc. If you save as CSV, that information would get lost. However, CSV is better for sharing with others since it’s plain text. If you do CSV, you might want to write down somewhere what each variable is.</p>
-<p>See here for some suggestions on how to store your processed data: http://www.sthda.com/english/wiki/saving-data-into-r-data-format-rds-and-rdata</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>save_data_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"processed_data"</span>,<span class="st">"processeddata.rds"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(processeddata, <span class="at">file =</span> save_data_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="notes" class="level1">
-<h1>Notes</h1>
-<p>Removing anyone who had “faulty” or missing data is one approach. It’s often not the best. based on your question and your analysis approach, you might want to do cleaning differently (e.g.&nbsp;keep individuals with some missing information).</p>
 </section>
 
 </main>
