@@ -336,8 +336,9 @@ $ Processing.Date                                                       &lt;chr&
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>raw_provider1 <span class="ot">&lt;-</span> raw_provider[<span class="fu">c</span>(<span class="st">"Federal.Provider.Number"</span>, <span class="st">"Average.Number.of.Residents.per.Day"</span>,</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day"</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Staffing.Rating"</span>, <span class="st">"Provider.State"</span>,   <span class="st">"Ownership.Type"</span>)]</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_provider1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Staffing.Rating"</span>, <span class="st">"Provider.State"</span>,   <span class="st">"Ownership.Type"</span>, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Total.Weighted.Health.Survey.Score"</span>, <span class="st">"Number.of.Citations.from.Infection.Control.Inspections"</span>)]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_provider1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
@@ -352,7 +353,7 @@ $ Processing.Date                                                       &lt;chr&
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">8</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">_______________________</td>
@@ -368,7 +369,7 @@ $ Processing.Date                                                       &lt;chr&
 </tr>
 <tr class="odd">
 <td style="text-align: left;">numeric</td>
-<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">________________________</td>
@@ -442,14 +443,14 @@ $ Processing.Date                                                       &lt;chr&
 <colgroup>
 <col style="width: 44%">
 <col style="width: 7%">
-<col style="width: 11%">
+<col style="width: 10%">
 <col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 2%">
 <col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 4%">
-<col style="width: 5%">
+<col style="width: 6%">
 <col style="width: 4%">
 </colgroup>
 <thead>
@@ -506,6 +507,32 @@ $ Processing.Date                                                       &lt;chr&
 <td style="text-align: right;">4.00</td>
 <td style="text-align: right;">5.00</td>
 <td style="text-align: left;">▇▆▆▆▃</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total.Weighted.Health.Survey.Score</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">69.15</td>
+<td style="text-align: right;">79.63</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">22.67</td>
+<td style="text-align: right;">45.33</td>
+<td style="text-align: right;">86.33</td>
+<td style="text-align: right;">2148.50</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number.of.Citations.from.Infection.Control.Inspections</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.58</td>
+<td style="text-align: right;">2.67</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">43.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
 </tr>
 </tbody>
 </table>
@@ -875,7 +902,7 @@ $ Processing.Date                                                       &lt;chr&
 <p>We know from our data gathering phase that nursing homes that didn’t have enough eligible residents for measure calculation would not have a HAI measure calculated. We see 3,209 of those cases are missing here. We will exclude them from our analysis. Also, we can get rid of the unnecessary variables too.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>raw_quality1 <span class="ot">&lt;-</span> raw_quality <span class="sc">%&gt;%</span> </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span> (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate) </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span> (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate, COMP_PERF) </span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>         </span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(raw_quality1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -892,7 +919,7 @@ $ Processing.Date                                                       &lt;chr&
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">6</td>
+<td style="text-align: left;">7</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">_______________________</td>
@@ -904,7 +931,7 @@ $ Processing.Date                                                       &lt;chr&
 </tr>
 <tr class="even">
 <td style="text-align: left;">character</td>
-<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">numeric</td>
@@ -963,6 +990,16 @@ $ Processing.Date                                                       &lt;chr&
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">53</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COMP_PERF</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
 <td style="text-align: right;">0</td>
 </tr>
 </tbody>

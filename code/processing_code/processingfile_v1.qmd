@@ -59,7 +59,8 @@ There are a lot of variables and observations in this dataset. We want to subset
 ```{r}
 raw_provider1 <- raw_provider[c("Federal.Provider.Number", "Average.Number.of.Residents.per.Day",
                    "Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day",
-                   "Staffing.Rating", "Provider.State",   "Ownership.Type")]
+                   "Staffing.Rating", "Provider.State",   "Ownership.Type", 
+                   "Total.Weighted.Health.Survey.Score", "Number.of.Citations.from.Infection.Control.Inspections")]
 skim(raw_provider1)
 
 ```
@@ -79,7 +80,7 @@ We know from our data gathering phase that nursing homes that didn't have enough
 ```{r}
 
 raw_quality1 <- raw_quality %>% 
-  select (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate) 
+  select (cms_certification_number_ccn, state, HAI_039_Observed, HAI_039_Obs_Rate, HAI_039_Denominator, HAI_039_RS_Rate, COMP_PERF) 
          
 skim(raw_quality1)
 ```

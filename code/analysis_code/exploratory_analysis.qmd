@@ -5,20 +5,19 @@ date: "02/24/2023"
 output: html_document
 ---
 
-  
-  
 This Quarto file loads the cleaned data and does some exploring.
 
 # Setup
 
 ```{r}
 #load needed packages. make sure they are installed.
-library(here) #for data loading/saving
-library(dplyr)
+library(here) 
+library (tidyverse)
+
 library(skimr)
+
 library(ggplot2)
 ```
-
 
 Load the data.
 
@@ -32,14 +31,9 @@ mydata <- readRDS(data_location)
 ls(mydata)
 ```
 
-
-
-
-
 # Data exploration through tables
 
 Showing a bit of code to produce and save a summary table.
-
 
 ```{r}
 summary_df = skimr::skim(mydata)
@@ -51,12 +45,12 @@ saveRDS(summary_df, file = summarytable_file)
 
 We are saving the results to the `results` folder. Depending on how many tables/figures you have, it might make sense to have separate folders for each. And/or you could have separate folders for exploratory tables/figures and for final tables/figures. Just choose a setup that makes sense for your project and works for you, and provide enough documentation that someone can understand what you are doing.
 
-
 # Data exploration through figures
 
-Histogram plots for the continuous outcomes. 
+Histogram plots for the continuous outcomes.
 
 First, Risk Standardized HAI Rate
+
 ```{r}
 p1 <- mydata %>% ggplot(aes(x=HAI_039_RS_Rate)) + geom_histogram() 
 plot(p1)
@@ -82,20 +76,71 @@ p3 <- mydata %>% ggplot(aes(x=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.p
 plot(p3)
 figure_file = here("results","staff_hai.png")
 ggsave(filename = figure_file, plot=p3) 
+
+
+
+p3b <- mydata %>% ggplot(aes(x=as.factor(Staffing.Rating), y=HAI_039_RS_Rate)) + geom_boxplot() + geom_jitter(width=0.15, alpha=0.08, color="black", fill="white")
+plot(p3b)
+
+
+figure_file = here("results","staffrating_hai.png")
+ggsave(filename = figure_file, plot=p3b) 
+
 ```
 
-Once more height as function of weight, stratified by ownership type. 
+Once more height as function of weight, stratified by ownership type.
 
 ```{r}
-p4 <- mydata %>% ggplot(aes(x=Ownership.Type, y=HAI_039_RS_Rate)) + geom_boxplot() + geom_smooth(method='lm')
+p4 <- mydata %>% ggplot(aes(x=as.factor(Ownership.Type), y=HAI_039_RS_Rate)) + geom_boxplot() + geom_smooth(method='lm')
 plot(p4)
 figure_file = here("results","staff_hai_ownership.png")
 ggsave(filename = figure_file, plot=p4) 
 ```
 
+# Changing our outcome
+
+In this plot we categorized our outcome as a 3-level variable: better than the national rate, worse than the national rate or no different than the national rate.
+
+```{r}
 
 
-# Notes
+p5 <-  mydata %>% ggplot(aes(x=as.factor(COMP_PERF), y=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + geom_boxplot() + geom_jitter(width=0.15, alpha=0.08, color="black", fill="white")
+plot(p5)
+  
+figure_file = here("results","staff_hai_compscore.png")
+ggsave(filename = figure_file, plot=p5) 
 
-Might want to regroup ownership type into fewer categories (e.g., put all government and for-profit together. 
+```
 
+We find that while nursing homes who have rates better than the national rate do appear to have higher staffing scores, nursing homes no different and worse than the national rate appear more similar in distribution.
+
+## Modeling Fun
+
+For this section I have decided I am going to assess if staffing rating adds additional information to my model that includes staffing rate. For this model we will use the risk adjusted HAI rate as a continuous outcome. We will use a linear model. We will make three models:
+
+1.  Model with staffing rate and other covariates of interest (Ownership Type, Average Number of Residents per Day, and staffing rate (the continuous value)
+2.  Model with staffing rating and other covariates of interest (Ownership Type, Average Number of Residents per day, and staffing rating (the categorical value)
+3.  Model with both staffing rating and staffing rate + other covariates of interest
+
+```{r}
+#Model 1
+
+model1 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
+
+summary(model1)
+
+model2 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + as.factor(Staffing.Rating)+ Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
+
+summary(model2)
+
+
+model3 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day+ as.factor(Staffing.Rating) + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
+
+summary(model3)
+
+
+```
+
+My key takeaways from these three models is that Model 2 and Model 3 have very similar R\^2 fits. So they are likely not adding that much information by including both staffing rating and the staffing rate in the same model. Also, while less important, we see that staffing rate is not significantly associated with our outcome in this fully adjusted model.
+
+I think currently I am leaning towards choosing model 2 as a our final model for associations. This will allow us to draw conclusions about how staffing ratings are associated with healthcare associated infection rates.
