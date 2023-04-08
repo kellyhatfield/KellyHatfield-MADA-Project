@@ -12,17 +12,13 @@ bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
 ---
 
-The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. You don't need to have exactly these sections, but the content covering those sections should be addressed.
-
-This uses MS Word as output format. [See here](https://quarto.org/docs/output-formats/ms-word.html) for more information. You can switch to other formats, like html or pdf. See [the Quarto documentation](https://quarto.org/) for other formats.
-
 ```{r, echo=FALSE, message=FALSE}
 # load a few R packages
 library(here)
 library(knitr)
 ```
 
-# Summary/Abstract
+# Summary
 
 Data Overview
 
@@ -50,15 +46,19 @@ First, we will provide a descriptive analysis of nursing homes across the United
 
 ## General Background Information
 
-*Provide enough background on your topic that others can understand the why and how of your analysis*
+Over 15,000 skilled nursing facilities (SNFs) and nursing homes provide residential long term care including both personal and medical services to over a million patients throughout the United States. Due to advanced age and medical complexity of residents in the nursing home setting, this population is at increased risk for significant morbidity and mortality. Previous estimates show that approximately 12% of NH residents had an infection at a given time; most commonly urinary tract infection (3.0--5.2%), pneumonia (2.2--4.4%), and cellulitis (1.6--2.0%). In the COVID-19 pandemic, nearly all nursing homes experienced outbreaks of COVID-19, and nursing home residents had disproportionately high mrobdiity and mortality compared to community dwelling adults. Nursing homes were mentioned as a specific target for reducing the morbidity and mortality related to healthcare associated infections in the 2009 *National Action Plan to Prevent Health Care-Associated Infections: Roadmap to Elimination* (HAI National Action Plan) and subsequent updates published in 2013 and 2018. Most healthcare associated infections (HAIs) are thought to be preventable as they result from the processes and structures related to poor care, including poor adherence to protocols and guidelines.
 
-## Description of data and data source
+The Centers for Medicare and Medicaid Services (CMS) reports measures of nursing home quality on their Care Compare website (https://www.medicare.gov/care-compare/). These measures of care include ownership details, health inspection ratings, staffing ratings, and quality measures. Data are searchable and comparable on the website for all participating nursing homes. Aggregate datasets are also available for download.
 
-*Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section.*
+Federal law requires all nursing homes to provide enough staff to safely care for residents. Nursing home reports daily staffing hours to Medicare in the payroll based journal. Using this information, Medicare calculates a ratio of staffing hours per resident day, the percent of nurse staff that stop working at the facility (turnover), and the number of administrators who have left the facility within a given year and reports the data publicly. CMS also creates a staffing star measure that is adjusted based off the needs of the residents in each home and is compiled using aggregated metrics about the RN staffing levels, total staffing hours, weekend staffing hours, total nurse turnover, RN turnover, and administrator turnover. (https://www.medicare.gov/care-compare/resources/nursing-home/staffing)
 
-## Questions/Hypotheses to be addressed
+CMS also calculates quality measures star rating. This assess different measures of nursing home quality. For this report we are most interested in a new quality measure *Skilled Nursing Facility Healthcare-Associated Infections (HAI) Requiring Hospitalization* that became reported for the first time in October 2022, with data collected throughout FY 2019. The HAI requiring hospitalization metric estimates the risk-standardized rate of HAIs that are acquired during SNF care andresult in hospitalization. The measure is calculated on Medicare claims data from fee-for-service beneficiaries residing within a nursing home. The measure requires no additional reporting from nursing home staff, and relies entirely on administrative claim data and is based on principal diagnosis on the Medicare inpatient (IP) claims of SNF residents.
 
-*State the research questions you plan to answer with this analysis.*
+## Study Objectives
+
+We aim to assess the association of nursing home staff star ratings with the healthcare associated infection rate in participating nursing homes.
+
+## 
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
 
@@ -68,7 +68,7 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 
 # Methods
 
-*Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement.*
+*Data were accessed from the*
 
 ## Data aquisition
 
@@ -88,7 +88,7 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 
 ## Exploratory/Descriptive analysis
 
-*Use a combination of text/tables/figures to explore and describe your data. Show the most important descriptive results here. Additional ones should go in the supplement. Even more can be in the R and Quarto files that are part of your project.*
+From all data, we identified 10,502 nursing homes with complete data to include in our analysis. Complete description of the cohort included in the study in the Supplementary Files.
 
 @tbl-summarytable shows a summary of the data.
 

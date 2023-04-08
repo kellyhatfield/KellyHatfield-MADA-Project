@@ -17,6 +17,9 @@ library (tidyverse)
 library(skimr)
 
 library(ggplot2)
+
+library(tidymodels)
+library(performance)
 ```
 
 Load the data.
@@ -114,7 +117,22 @@ ggsave(filename = figure_file, plot=p5)
 
 We find that while nursing homes who have rates better than the national rate do appear to have higher staffing scores, nursing homes no different and worse than the national rate appear more similar in distribution.
 
-## Modeling Fun
+## Modeling Exercises
+
+First, I have decided to split the dataset into test and training sets.
+
+```{r}
+# Fix the random numbers by setting the seed 
+# This enables the analysis to be reproducible when random numbers are used 
+set.seed(555)
+# Put 3/4 of the data into the training set 
+data_split <- initial_split(mydata, prop = 3/4)
+
+# Create data frames for the two sets:
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+```
 
 For this section I have decided I am going to assess if staffing rating adds additional information to my model that includes staffing rate. For this model we will use the risk adjusted HAI rate as a continuous outcome. We will use a linear model. We will make three models:
 
@@ -122,21 +140,68 @@ For this section I have decided I am going to assess if staffing rating adds add
 2.  Model with staffing rating and other covariates of interest (Ownership Type, Average Number of Residents per day, and staffing rating (the categorical value)
 3.  Model with both staffing rating and staffing rate + other covariates of interest
 
+#Applying the model to unseen test data
+
+predict(model_fit2, test_data)
+
+model_aug2\<- augment(model_fit1, test_data)
+
+#pull RS HAI Rate and predictions
+
+temps \<- model_aug2 %\>% pull(HAI_039_RS_Rate)
+
+pred \<- model_aug2 %\>% pull(.pred)
+
+#run rmse
+
+rmse_vec(temps, pred)
+
 ```{r}
 #Model 1
 
-model1 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
 
-summary(model1)
+recipe_1 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
 
-model2 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + as.factor(Staffing.Rating)+ Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
+recipe_2 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + as.factor(Staffing.Rating), data= train_data)
 
-summary(model2)
+recipe_3 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + as.factor(Staffing.Rating), data= train_data)
 
 
-model3 <- lm(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day+ as.factor(Staffing.Rating) + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data=mydata)
+#model: linear regression using GLM engine
+ln_mod <- linear_reg() %>% set_engine ("lm")
 
-summary(model3)
+
+#workflow: tying together linear model and recipe of chocie
+wflow1 <- workflow() %>% add_model(ln_mod) %>% add_recipe(recipe_1)
+wflow2 <- workflow() %>% add_model(ln_mod) %>% add_recipe(recipe_2)
+wflow3 <- workflow() %>% add_model(ln_mod) %>% add_recipe(recipe_3)
+
+#Fitting the model to train dataset
+model_fit1 <- wflow1 %>%  fit(data = train_data)
+model_fit2 <- wflow2 %>%  fit(data = train_data)
+model_fit3 <- wflow3 %>%  fit(data = train_data)
+
+#Looking at model output;
+model_fit1 %>% extract_fit_parsnip() %>%  tidy()
+model_fit2 %>% extract_fit_parsnip() %>%  tidy()
+model_fit3 %>% extract_fit_parsnip() %>%  tidy()
+
+#Applying the model to unseen test data
+predict(model_fit2, test_data)
+model_aug2<- augment(model_fit1, test_data)
+
+#pull RS HAI Rate and predictions
+temps <- model_aug2 %>% pull(HAI_039_RS_Rate)
+pred <- model_aug2 %>% pull(.pred)
+
+#run rmse
+rmse_vec(temps, pred)
+
+#Selecting model 2 as final model
+
+#Running on test data
+
+
 
 
 ```
