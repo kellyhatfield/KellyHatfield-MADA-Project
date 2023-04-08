@@ -20,25 +20,7 @@ library(knitr)
 
 # Summary
 
-Data Overview
-
-For this project I will utilize data collected and aggregated by the Centers for Medicare Services (CMS) for all CMS certified nursing homes throughout the United States. The data are accessed here: https://data.cms.gov/provider-data/archived-data/nursing-homes. There are approximately 15,000 CMS certified nursing homes throughout the US, so we will have a large geographically diverse population to study.
-
-For this analysis I will be combining two files:
-
-The provider information file contains general information on currently active nursing homes, including number of certified beds, quality measure scores, staffing and other information used in the Five-Star Rating System. Data are presented as one row per nursing home.
-
-The second file will contain data aggreated for the Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare Website.
-
-Detailed infromation about the various QRP metrics can be found on CMS technical appendix page: https://www.cms.gov/Medicare/Quality-Initiatives- Patient-Assessment-Instruments/NursingHomeQualityInits/Skilled-Nursing-Facility-Quality-Reporting- Program/SNF-Quality-Reporting-Program-Measures-and-Technical-Information.
-
-The primary QRP metric of interest for this study will be S_039_01: Percentage of patients who acquired a healthcare-associated infection during their SNF stay that resulted in hospitalization. This metric is derived entirely from fee-for-service Medicare claims data and relatively new, as it has only been publicly reported since late 2022. This percentage is shown both as the observed rate and as the risk standardized rate. CMS also reports if this rate is as expected, significantly worse than expected, or significantly better compared to all other nursing homes in that time period.
-
-Data Analysis
-
-The proposed study aims to assess the relationship between overall staffing rates with healthcare-associated infection rates.
-
-First, we will provide a descriptive analysis of nursing homes across the United States including two different staffing measures, bed size, ownership, average number of residents per day. Second, we will utilize ANOVA methods to determine which, if any, average staffing characteristics are associated with the classifications of HAI rates as "better", "worse", or "as expected". Third, we will assess a variety of nursing home characteristics and selected staffing measures for associations with the risk adjusted rate of HAIs in the nursing home.
+The proposed study aims to assess the relationship between overall staffing rates with healthcare-associated infection rates in nursing homes throughout the United States.
 
 {{< pagebreak >}}
 
@@ -46,41 +28,43 @@ First, we will provide a descriptive analysis of nursing homes across the United
 
 ## General Background Information
 
-Over 15,000 skilled nursing facilities (SNFs) and nursing homes provide residential long term care including both personal and medical services to over a million patients throughout the United States. Due to advanced age and medical complexity of residents in the nursing home setting, this population is at increased risk for significant morbidity and mortality. Previous estimates show that approximately 12% of NH residents had an infection at a given time; most commonly urinary tract infection (3.0--5.2%), pneumonia (2.2--4.4%), and cellulitis (1.6--2.0%). In the COVID-19 pandemic, nearly all nursing homes experienced outbreaks of COVID-19, and nursing home residents had disproportionately high mrobdiity and mortality compared to community dwelling adults. Nursing homes were mentioned as a specific target for reducing the morbidity and mortality related to healthcare associated infections in the 2009 *National Action Plan to Prevent Health Care-Associated Infections: Roadmap to Elimination* (HAI National Action Plan) and subsequent updates published in 2013 and 2018. Most healthcare associated infections (HAIs) are thought to be preventable as they result from the processes and structures related to poor care, including poor adherence to protocols and guidelines.
+Over 15,000 skilled nursing facilities (SNFs) and nursing homes provide residential long term care including both personal and medical services to over a million patients throughout the United States. Due to advanced age and medical complexity of residents in the nursing home setting, this population is at increased risk for significant morbidity and mortality. Previous estimates show that approximately 12% of NH residents had an infection at a given time [@thompson2020epidemiology]; most commonly urinary tract infection (3.0--5.2%), pneumonia (2.2--4.4%), and cellulitis (1.6--2.0%). In the COVID-19 pandemic, nearly all nursing homes experienced outbreaks of COVID-19, and nursing home residents had disproportionately high morbidity and mortality compared to community dwelling adults. Nursing homes were mentioned as a specific target for reducing the morbidity and mortality related to healthcare associated infections in the 2009 *National Action Plan to Prevent Health Care-Associated Infections: Roadmap to Elimination* (HAI National Action Plan) and subsequent updates published in 2013 and 2018. Most healthcare associated infections (HAIs) are thought to be preventable as they result from the processes and structures related to poor care, including poor adherence to protocols and guidelines.
 
-The Centers for Medicare and Medicaid Services (CMS) reports measures of nursing home quality on their Care Compare website (https://www.medicare.gov/care-compare/). These measures of care include ownership details, health inspection ratings, staffing ratings, and quality measures. Data are searchable and comparable on the website for all participating nursing homes. Aggregate datasets are also available for download.
+The Centers for Medicare and Medicaid Services (CMS) reports measures of nursing home quality on their Care Compare website (https://www.medicare.gov/care-compare/). These measures of care include ownership details, health inspection ratings, staffing ratings, and quality measures. Data are searchable and comparable on the website for all participating nursing homes. Aggregate data sets are also available for download.
 
-Federal law requires all nursing homes to provide enough staff to safely care for residents. Nursing home reports daily staffing hours to Medicare in the payroll based journal. Using this information, Medicare calculates a ratio of staffing hours per resident day, the percent of nurse staff that stop working at the facility (turnover), and the number of administrators who have left the facility within a given year and reports the data publicly. CMS also creates a staffing star measure that is adjusted based off the needs of the residents in each home and is compiled using aggregated metrics about the RN staffing levels, total staffing hours, weekend staffing hours, total nurse turnover, RN turnover, and administrator turnover. (https://www.medicare.gov/care-compare/resources/nursing-home/staffing)
+Federal law requires all nursing homes to provide enough staff to safely care for residents. Nursing home reports daily staffing hours to Medicare in the payroll based journal. Using this information, Medicare calculates a ratio of staffing hours per resident day, the percent of nurse staff that stop working at the facility (turnover), and the number of administrators who have left the facility within a given year and reports the data publicly. CMS also creates a staffing star measure that is adjusted based off the needs of the residents in each home and is compiled using aggregated metrics about the RN staffing levels, total staffing hours, weekend staffing hours, total nurse turnover, RN turnover, and administrator turnover. (https://www.medicare.gov/care-compare/resources/nursing-home/staffing).
 
-CMS also calculates quality measures star rating. This assess different measures of nursing home quality. For this report we are most interested in a new quality measure *Skilled Nursing Facility Healthcare-Associated Infections (HAI) Requiring Hospitalization* that became reported for the first time in October 2022, with data collected throughout FY 2019. The HAI requiring hospitalization metric estimates the risk-standardized rate of HAIs that are acquired during SNF care andresult in hospitalization. The measure is calculated on Medicare claims data from fee-for-service beneficiaries residing within a nursing home. The measure requires no additional reporting from nursing home staff, and relies entirely on administrative claim data and is based on principal diagnosis on the Medicare inpatient (IP) claims of SNF residents.
+CMS also calculates quality measures star rating. This assess different measures of nursing home quality. For this report we are most interested in a new quality measure *Skilled Nursing Facility Healthcare-Associated Infections (HAI) Requiring Hospitalization* that became reported for the first time in October 2022, with data collected throughout FY 2019. The HAI requiring hospitalization metric estimates the risk-standardized rate of HAIs that are acquired during SNF care and result in hospitalization. The measure is calculated on Medicare claims data from fee-for-service beneficiaries residing within a nursing home. The measure requires no additional reporting from nursing home staff, and relies entirely on administrative claim data and is based on principal diagnosis on the Medicare inpatient (IP) claims of SNF residents.
 
 ## Study Objectives
 
-We aim to assess the association of nursing home staff star ratings with the healthcare associated infection rate in participating nursing homes.
-
-## 
-
-To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
-
-Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a]
+Previous studies have shown that certain staffing metrics are associated with lower quality metrics in US nursing homes [@mukamel2023association, @mukamel2022daily]. However, they were limited because they did not assess healthcare associated infections requiring hospitalization. We aim to assess the association of nursing home staff star ratings with the healthcare associated infection rate in participating nursing homes.
 
 {{< pagebreak >}}
 
 # Methods
 
-*Data were accessed from the*
+## Data acquisition
 
-## Data aquisition
+For this project I will utilize data collected and aggregated by the Centers for Medicare Services (CMS) for all CMS certified nursing homes throughout the United States. The data are accessed here: <https://data.cms.gov/provider-data/archived-data/nursing-homes>. There are approximately 15,000 CMS certified nursing homes throughout the US, so we will have a large geographically diverse population to study.
 
-*As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next.*
+First, the provider information file contains general information on currently active nursing homes, including number of certified beds, quality measure scores, staffing and other information used in the Five-Star Rating System. Data are presented as one row per nursing home. The nurse staffing metrics in this data set include reported and adjusted measures of nurse aide staffing hours per resident per day, licensed professional nurse (LPN) staffing hours per resident per day, registered nurse (RN) staffing hours per resident per day, total nurse staffing hours per resident per day, and total number of nursing staffing hours per resident per day on the weekend. The data also includes turnover data including RN turnover, total staff turn over, and administrator turnover.
 
-## Data import and cleaning
+Second, we addend the provider information with aggregated data reported as part ofthe Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare site referenced above.
 
-*Write code that reads in the file and cleans it so it's ready for analysis. Since this will be fairly long code for most datasets, it might be a good idea to have it in one or several R scripts. If that is the case, explain here briefly what kind of cleaning/processing you do, and provide more details and well documented code somewhere (e.g. as supplement in a paper). All materials, including files that contain code, should be commented well so everyone can follow along.*
+The primary QRP metric of interest for this study is titled S_039_01: Percentage of patients who acquired a healthcare-associated infection during their SNF stay that resulted in hospitalization. This percentage is shown both as the observed rate and as a risk standardized rate. The HAI requiring hospitalization metric is also given as a categorical variable, where the nursing home is compared to all other nursing homes in that time period and categorized as average, significantly worse than average, or significantly better than average.
+
+## Data cleaning
+
+Data from both data sets will be merged together using a unique facility identifier, the CMS Certification Number (CCN). We will subset our data set to include only nursing homes with complete provider information and HAI requiring hospitalization metrics. Nursing homes with missing data will be excluded from analysis.
 
 ## Statistical analysis
 
-*Explain anything related to your statistical analyses.*
+First, we describe the distribution of adjusted average total staffing and risk standardized rate of HAIs requiring hospitalization by nursing home. We also describe the frequency and percent of the categorical staffing rating and HAI categorization (better, worse, or same as average). Second, we consider bivariate associations of the risk standardized infection rate by the staffing rating variable.
+
+Third, we create multivariable models that assess the relationship between the risk standardized HAI rate (outcome) and the total average staffing per resident per day and staffing rating, while adjusting for important nursing home characteristics as identified through the literature including: ownership, number of health violation, health inspection score, and average number of residents per day. For our multivariable models, we aim to determine if the total average staffing per resident per day and staffing rating are independently associated with the outcome.
+
+To create our multivariable models and assess their ability for prediction, we first divided our full data cohort into a training (70% of nursing homes) and test data set (30% of nursing homes). We used our training data to determine covariates included in our final model. Then, we applied our final model to our test data subset. We compared parameter estimates and conclusions, to ensure that the model fits similarly in both subsets of data.
 
 {{< pagebreak >}}
 
@@ -89,6 +73,8 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 ## Exploratory/Descriptive analysis
 
 From all data, we identified 10,502 nursing homes with complete data to include in our analysis. Complete description of the cohort included in the study in the Supplementary Files.
+
+Figure 1
 
 @tbl-summarytable shows a summary of the data.
 
