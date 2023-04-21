@@ -1,0 +1,211 @@
+---
+title: "Paper analysis "
+author: "Kelly Hatfield"
+date: "04/23/2023"
+output: html_document
+---
+
+This Quarto file loads the cleaned data and does some exploring.
+
+# Setup
+
+```{r}
+#load needed packages. make sure they are installed.
+library(here) 
+library (tidyverse)
+
+library(skimr)
+
+library(ggplot2)
+
+library(tidymodels)
+library(performance)
+library(stringr)
+library(dplyr)
+
+```
+
+Load the data.
+
+```{r}
+#Path to data. Note the use of the here() package and not absolute paths
+data_location <- here::here("data","processed_data","processeddata.rds")
+#load data
+mydata <- readRDS(data_location)
+
+#Reminder of variable names
+ls(mydata)
+```
+
+## Results
+
+### Descriptive stats: staff and HAI rate
+
+f2
+
+figure2 = here("results","Staff_prpd_distribution.png")
+
+ggsave(filename = figure2, plot=f2)
+
+```{r}
+
+mean(mydata$HAI_039_RS_Rate)
+
+mytitlef1 <- "Figure: Distribution of adjusted rate of HAIs requring hospitalization by nursing home"
+
+p1 <- mydata %>% ggplot(aes(x=HAI_039_RS_Rate)) + geom_histogram() + labs(
+    x = "Adjusted rate of HAIs requring hospitalization",              # x axis title
+    y = "Count of Nursing Homes",   # y axis title
+    title=  str_wrap(mytitlef1, 50) ,      # main title of figure
+    colour = "Continent"      # title of legend
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(face = "bold"))
+
+
+figure_file = here("results","RiskStandardized_HAI_Rate_distribution.png")
+ggsave(filename = figure1, plot=p1) 
+
+mydata %>%
+  group_by(COMP_PERF) %>% summarise( n = n(), percent=n()/sum(n()),
+                                     mean = mean(HAI_039_RS_Rate))
+
+vp <- ggplot(mydata, aes(x=COMP_PERF, y=HAI_039_RS_Rate)) + labs(x = " ", y = "Adjusted rate of HAIs requring hospitalization", title=  str_wrap(mytitlef1, 75))+ geom_violin(trim=FALSE) +  stat_summary(fun = "mean",
+               geom = "point",
+               color = "red")
+vp
+
+
+
+mytitlef2 <- "Figure: Distribution of total staff per resident per day by nursing home"
+
+f2 <- mydata %>% ggplot(aes(x=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + geom_histogram() + labs(y = "Count of Nursing Homes ", x = "Total Staffing per Resident per Day", title=  str_wrap(mytitlef2, 50))+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(face = "bold"))
+
+f2
+figure2 = here("results","Staff_prpd_distribution.png")
+ggsave(filename = figure2, plot=f2) 
+
+vp2 <- ggplot(mydata, aes(x=as.factor(Staffing.Rating), y=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + labs(x = " ", y = "Total Nurse Staffing Per Resident Per Day", title=  str_wrap(mytitlef1, 75))+ geom_violin(trim=FALSE) +  stat_summary(fun = "mean",
+               geom = "point",
+               color = "red")
+vp2
+figure2b = here("results","Staff_prpd_distribution_group.png")
+ggsave(filename = figure2b, plot=vp2) 
+
+mydata %>%
+  group_by(Staffing.Rating) %>% summarise( n = n(), percent=n()/sum(n()),
+                                     mean = mean(Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day))
+
+
+```
+
+## Bivariate Analysis
+
+```{r}
+library(ggpubr)
+
+mytitlef3 <- "Figure: Relationship of total staff per resident per day by nursing home with Adjusted HAI Rate by nursing home"
+sp <- ggplot(mydata, aes(x= Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, y = HAI_039_RS_Rate)) + geom_point() + labs(y = "Adjusted HAI Rate ", x = "Total Nurse Staffing Per Resident Per Day", title=  str_wrap(mytitlef1, 75)) + geom_smooth(method=lm, se=FALSE)  + theme(plot.title = element_text(hjust = 0.5), panel.background = element_blank(), axis.line = element_line(color="black"), axis.line.x = element_line(color="black")) + stat_cor(method="pearson", label.x=0, label.y=20)
+
+sp
+
+figure3 = here("results","correlation.png")
+ggsave(filename = figure3, plot=sp) 
+
+
+
+mydata %>%
+  group_by(COMP_PERF) %>% summarise( n = n(), percent=n()/sum(n()),
+                                     mean = mean(Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, na.rm=T))
+
+
+mytitlef4a <- "Figure: Relationship of total staff per resident per day by nursing home with HAI Rating by nursing home"
+
+vp4a <- ggplot(mydata, aes(x=as.factor(COMP_PERF), y=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + labs(x = " ", y = "Total Nurse Staffing Per Resident Per Day", title=  str_wrap(mytitlef4a, 75))+ geom_violin(trim=FALSE) +  stat_summary(fun = "mean",
+               geom = "point",
+               color = "red")
+figure4 = here("results","staffingrate_HAIgroup.png")
+ggsave(filename = figure4, plot=vp4a) 
+
+
+###### Save for later ######
+mytitlef4b <- "Figure: Relationship of adjusted HAI rate with Staffing Rating by nursing home"
+vp4b <- ggplot(mydata, aes(x=as.factor(Staffing.Rating), y=HAI_039_RS_Rate)) + labs(x = " ", y = "Adjusted HAI Rate", title=  str_wrap(mytitlef4b, 75))+ geom_violin(trim=FALSE) +  stat_summary(fun = "mean",
+               geom = "point",
+               color = "red")
+vp4b
+
+
+```
+
+## Models
+
+```{r}
+# This enables the analysis to be reproducible when random numbers are used 
+set.seed(555)
+
+mydata$Staffing.Rating.F <- as.factor(mydata$Staffing.Rating)
+
+# Put 3/4 of the data into the training set 
+data_split <- initial_split(mydata, prop = 3/4)
+
+# Create data frames for the two sets:
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+
+recipe_2 <- recipe(HAI_039_RS_Rate ~ Staffing.Rating  + Ownership.Type + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
+
+#model: linear regression using GLM engine
+ln_mod <- linear_reg() %>% set_engine ("lm")
+
+
+#workflow: tying together linear model and recipe of chocie
+wflow2 <- workflow() %>% add_model(ln_mod) %>% add_recipe(recipe_2)
+
+#Fitting the model to train dataset
+model_fit2 <- wflow2 %>%  fit(data = train_data)
+
+#Looking at model output;
+model_fit2 %>% extract_fit_parsnip() %>%  tidy()
+
+#Applying the model to unseen test data
+predict(model_fit2, test_data)
+model_aug2<- augment(model_fit2, test_data)
+
+#pull RS HAI Rate and predictions
+temps <- model_aug2 %>% pull(HAI_039_RS_Rate)
+pred <- model_aug2 %>% pull(.pred)
+
+#run rmse
+rmse_vec(temps, pred)
+
+
+
+#Looking at model output on all of the data
+wflow2 %>%  fit(data = mydata) %>% extract_fit_parsnip() %>%  tidy()
+```
+
+# Appendix
+
+## Table 1: Summary of Findings
+
+Showing a bit of code to produce and save a summary table.
+
+```{r}
+
+#Appendix Tabe 1: Make a table of all the distributions of all variables included in the analysis univariate
+
+summary_df = skimr::skim(mydata)
+print(summary_df)
+# save to file
+summarytable_file = here("results", "summarytable.rds")
+saveRDS(summary_df, file = summarytable_file)
+
+
+
+```
+
+## 

@@ -20,6 +20,7 @@ library(ggplot2)
 
 library(tidymodels)
 library(performance)
+library(stringr)
 ```
 
 Load the data.
@@ -66,7 +67,18 @@ ggsave(filename = figure_file, plot=p1)
 Now Total Nurse Staffing per Resident per Day
 
 ```{r}
-p2 <- mydata %>% ggplot(aes(x=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + geom_histogram() 
+
+mytitle <- "Figure: Distribution of adjusted total nursing staffing hours per resident per day"
+
+p2 <- mydata %>% ggplot(aes(x=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + geom_histogram() + labs(
+    x = "Adjusted total nursing staffing hours per resident per day",              # x axis title
+    y = "Count of Nursing Homes",   # y axis title
+    title=  str_wrap(mytitle, 60) ,      # main title of figure
+    colour = "Continent"      # title of legend
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(face = "bold"))
+
 plot(p2)
 figure_file = here("results","Adj_Tot_Staff_prpd.png")
 ggsave(filename = figure_file, plot=p2) 
@@ -186,10 +198,13 @@ model_fit1 %>% extract_fit_parsnip() %>%  tidy()
 model_fit2 %>% extract_fit_parsnip() %>%  tidy()
 model_fit3 %>% extract_fit_parsnip() %>%  tidy()
 
+
+
+
 #Applying the model to unseen test data
 predict(model_fit2, test_data)
-model_aug2<- augment(model_fit1, test_data)
-
+model_aug2<- augment(model_fit2, test_data)
+  
 #pull RS HAI Rate and predictions
 temps <- model_aug2 %>% pull(HAI_039_RS_Rate)
 pred <- model_aug2 %>% pull(.pred)
@@ -207,5 +222,3 @@ rmse_vec(temps, pred)
 ```
 
 My key takeaways from these three models is that Model 2 and Model 3 have very similar R\^2 fits. So they are likely not adding that much information by including both staffing rating and the staffing rate in the same model. Also, while less important, we see that staffing rate is not significantly associated with our outcome in this fully adjusted model.
-
-I think currently I am leaning towards choosing model 2 as a our final model for associations. This will allow us to draw conclusions about how staffing ratings are associated with healthcare associated infection rates.

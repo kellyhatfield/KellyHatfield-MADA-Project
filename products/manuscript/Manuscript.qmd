@@ -26,13 +26,13 @@ The proposed study aims to assess the relationship between overall staffing rate
 
 # Introduction
 
-## General Background Information
+## Background
 
 Over 15,000 skilled nursing facilities (SNFs) and nursing homes provide residential long term care including both personal and medical services to over a million patients throughout the United States. Due to advanced age and medical complexity of residents in the nursing home setting, this population is at increased risk for significant morbidity and mortality. Previous estimates show that approximately 12% of NH residents had an infection at a given time [@thompson2020epidemiology]; most commonly urinary tract infection (3.0--5.2%), pneumonia (2.2--4.4%), and cellulitis (1.6--2.0%). In the COVID-19 pandemic, nearly all nursing homes experienced outbreaks of COVID-19, and nursing home residents had disproportionately high morbidity and mortality compared to community dwelling adults. Nursing homes were mentioned as a specific target for reducing the morbidity and mortality related to healthcare associated infections in the 2009 *National Action Plan to Prevent Health Care-Associated Infections: Roadmap to Elimination* (HAI National Action Plan) and subsequent updates published in 2013 and 2018. Most healthcare associated infections (HAIs) are thought to be preventable as they result from the processes and structures related to poor care, including poor adherence to protocols and guidelines.
 
-The Centers for Medicare and Medicaid Services (CMS) reports measures of nursing home quality on their Care Compare website (https://www.medicare.gov/care-compare/). These measures of care include ownership details, health inspection ratings, staffing ratings, and quality measures. Data are searchable and comparable on the website for all participating nursing homes. Aggregate data sets are also available for download.
+The Centers for Medicare and Medicaid Services (CMS) reports measures of nursing home quality on their [Care Compare website](https://www.medicare.gov/care-compare/ "https://www.medicare.gov/care-compare/"). These measures of care include ownership details, health inspection ratings, staffing ratings, and quality measures. Data are searchable and comparable on the website for all participating nursing homes. Aggregate data sets are also available for download.
 
-Federal law requires all nursing homes to provide enough staff to safely care for residents. Nursing home reports daily staffing hours to Medicare in the payroll based journal. Using this information, Medicare calculates a ratio of staffing hours per resident day, the percent of nurse staff that stop working at the facility (turnover), and the number of administrators who have left the facility within a given year and reports the data publicly. CMS also creates a staffing star measure that is adjusted based off the needs of the residents in each home and is compiled using aggregated metrics about the RN staffing levels, total staffing hours, weekend staffing hours, total nurse turnover, RN turnover, and administrator turnover. (https://www.medicare.gov/care-compare/resources/nursing-home/staffing).
+Federal law requires all nursing homes to provide enough staff to safely care for residents. Nursing home reports daily staffing hours to Medicare in the payroll based journal. Using this information, Medicare calculates a ratio of staffing hours per resident day, the percent of nurse staff that stop working at the facility (turnover), and the number of administrators who have left the facility within a given year and reports the data publicly. CMS also creates a [staffing star measure](https://www.medicare.gov/care-compare/resources/nursing-home/staffing) that is adjusted based off the needs of the residents in each home and is compiled using aggregated metrics about the RN staffing levels, total staffing hours, weekend staffing hours, total nurse turnover, RN turnover, and administrator turnover.
 
 CMS also calculates quality measures star rating. This assess different measures of nursing home quality. For this report we are most interested in a new quality measure *Skilled Nursing Facility Healthcare-Associated Infections (HAI) Requiring Hospitalization* that became reported for the first time in October 2022, with data collected throughout FY 2019. The HAI requiring hospitalization metric estimates the risk-standardized rate of HAIs that are acquired during SNF care and result in hospitalization. The measure is calculated on Medicare claims data from fee-for-service beneficiaries residing within a nursing home. The measure requires no additional reporting from nursing home staff, and relies entirely on administrative claim data and is based on principal diagnosis on the Medicare inpatient (IP) claims of SNF residents.
 
@@ -50,7 +50,7 @@ For this project I will utilize data collected and aggregated by the Centers for
 
 First, the provider information file contains general information on currently active nursing homes, including number of certified beds, quality measure scores, staffing and other information used in the Five-Star Rating System. Data are presented as one row per nursing home. The nurse staffing metrics in this data set include reported and adjusted measures of nurse aide staffing hours per resident per day, licensed professional nurse (LPN) staffing hours per resident per day, registered nurse (RN) staffing hours per resident per day, total nurse staffing hours per resident per day, and total number of nursing staffing hours per resident per day on the weekend. The data also includes turnover data including RN turnover, total staff turn over, and administrator turnover.
 
-Second, we addend the provider information with aggregated data reported as part ofthe Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare site referenced above.
+Second, we addend the provider information with aggregated data reported as part of the Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare site referenced above.
 
 The primary QRP metric of interest for this study is titled S_039_01: Percentage of patients who acquired a healthcare-associated infection during their SNF stay that resulted in hospitalization. This percentage is shown both as the observed rate and as a risk standardized rate. The HAI requiring hospitalization metric is also given as a categorical variable, where the nursing home is compared to all other nursing homes in that time period and categorized as average, significantly worse than average, or significantly better than average.
 
@@ -60,7 +60,9 @@ Data from both data sets will be merged together using a unique facility identif
 
 ## Statistical analysis
 
-First, we describe the distribution of adjusted average total staffing and risk standardized rate of HAIs requiring hospitalization by nursing home. We also describe the frequency and percent of the categorical staffing rating and HAI categorization (better, worse, or same as average). Second, we consider bivariate associations of the risk standardized infection rate by the staffing rating variable.
+First, we describe the distribution of adjusted average total staffing and risk standardized rate of HAIs requiring hospitalization by nursing home. We also describe the frequency and percent of the categorical staffing rating and HAI categorization (better, worse, or same as average).
+
+Second, we consider bivariate associations of the risk standardized infection rate by the staffing rating variable.
 
 Third, we create multivariable models that assess the relationship between the risk standardized HAI rate (outcome) and the total average staffing per resident per day and staffing rating, while adjusting for important nursing home characteristics as identified through the literature including: ownership, number of health violation, health inspection score, and average number of residents per day. For our multivariable models, we aim to determine if the total average staffing per resident per day and staffing rating are independently associated with the outcome.
 
@@ -74,11 +76,79 @@ To create our multivariable models and assess their ability for prediction, we f
 
 From all data, we identified 10,502 nursing homes with complete data to include in our analysis. Complete description of the cohort included in the study in the Supplementary Files.
 
-Figure 1
+Distributions of all variables are included in the Appendix.
 
-@tbl-summarytable shows a summary of the data.
+## Statistical analysis
 
-Note the loading of the data providing a **relative** path using the `../../` notation. (Two dots means a folder up). You never want to specify an **absolute** path like `C:\ahandel\myproject\results\` because if you share this with someone, it won't work for them since they don't have that path. You can also use the `here` R package to create paths. See examples of that below.
+### Univariate Analysis
+
+Overall, 408 (4%) of nursing homes had an adjusted rate worse than average (mean rate: 12.3), and 149 (1%) had an adjusted rate categorized as better than average (mean rate: 4.4). The mean adjusted rate of HAIs requiring hospitalization for 9,945 nursing homes categorized no different than average was 7.5. The adjusted HAI rates are visualized in Figure 1.
+
+```{r}
+#| label: fig-result1
+#| fig-cap: "Risk Standardized Rate of HAI by Nursing Home"
+#| echo: FALSE
+knitr::include_graphics(here("results","RiskStandardized_HAI_Rate_distribution.png"))
+
+```
+
+Overall, 3,117 (30%) of nursing homes had a staffing rating of 1, and no data available for the total staffing per resident per day. Another 154 (1%) of nursing homes were missing staffing rating and staffing measures. The distribution stratified by staffing rating is shown in Figure 2. The average adjusted total staffing rate was 3.36 for for staffing rating of 2 stars, 3.76 for staffing rating of 3 stars, 4.01 for staffing rating of 4 stars, and 5.30 for a staffing rating of 5 stars.
+
+```{r}
+
+#| label: fig-result2
+#| fig-cap: "Total Staff Per Resident Per Day by Nursing Home"
+#| echo: FALSE
+knitr::include_graphics(here("results","Staff_prpd_distribution.png"))
+
+
+
+```
+
+```{r}
+
+#| label: fig-result2b
+#| fig-cap: "Total Staff Per Resident Per Day Stratified by Nursing Home"
+#| echo: FALSE
+knitr::include_graphics(here("results","Staff_prpd_distribution_group.png"))
+
+
+```
+
+### Bivariate Analysis
+
+The correlation between adjusted average total staffing and the adjusted HAI rate was -0.2 (Figure 3), indicating that the HAI rate decreased as the total staffing measure increased.
+
+```{r}
+#| label: fig-result3
+#| fig-cap: "Staffing rate and Adjusted HAI Rate"
+#| echo: FALSE
+knitr::include_graphics(here("results","correlation.png"))
+
+```
+
+Nursing homes categorized as better than average had a mean adjusted average total staffing rate of 4.79, compared to 3.65 for nursing homes categorized as average, and 3.51 for nursing homes categorized as worse than average (Figure 4).
+
+```{r}
+#| label: fig-result4
+#| fig-cap: "Staffing rate stratified by HAI categorization"
+#| echo: FALSE
+knitr::include_graphics(here("results","staffingrate_HAIgroup.png"))
+```
+
+### Multivariable Models
+
+For our training data, we selected 75% of the data which represented XX nursing homes. We compared three linear regression models with the outcome of risk adjusted HAI rate. The predictor of interest in the first model was the the total average staffing per resident per day and staffing **rating,** a numeric score from 1 - 5 stars. The predictor of interest for the second model was the average total staffing per resident per day score. For the third model we considered both the staffing rating and the average total staffing measure as the predictors of interest.
+
+We compared the three models using RMSE to determine which model best fit our data in the training dataset. The comparable RMSE rates are shown in Table 2.
+
+***#Add R Code here to show Table 2 (RMSE for different model choices 1,2,3)***
+
+We selected model 1, containing only the staffing rating as our best fitting model.When we applied model 1 to our test data we found that the predicted and observed values were fairly similar (Figure 5) and the RMSE was 1.79.
+
+***#Add R Code here to show Figure 5***
+
+For model 1, we found that in our training dataset the parameter estimate for staffing rating was -0.2. This can be interpreted as for each increase in staffing rating, the adjusted HAI rate decreases by 0.2, while adjusting for other nursing home characteristics. When we ran model 2 on our full dataset, we also got a parameter estimate of -0.2. This gives us confidence that our conclusions from model 1 are robust.
 
 ```{r}
 #| label: tbl-summarytable
@@ -88,56 +158,29 @@ resulttable=readRDS("../../results/summarytable.rds")
 knitr::kable(resulttable)
 ```
 
-## Basic statistical analysis
-
-*To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p\<0.05 means statistical significance" interpretation is not valid.*
-
-@fig-result shows a scatterplot figure produced by one of the R scripts.
-
-```{r}
-#| label: fig-result
-#| fig-cap: "Height and weight stratified by gender."
-#| echo: FALSE
-knitr::include_graphics(here("results","height_weight_stratified.png"))
-```
-
-## Full analysis
-
-*Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here.*
-
-Example @tbl-resulttable2 shows a summary of a linear model fit.
-
-```{r}
-#| label: tbl-resulttable2
-#| tbl-cap: "Linear model fit table."
-#| echo: FALSE
-resulttable2 = readRDS(here("results","resulttable2.rds"))
-knitr::kable(resulttable2)
-```
-
 {{< pagebreak >}}
 
 # Discussion
 
 ## Summary and Interpretation
 
-*Summarize what you did, what you found and what it means.*
+This analysis demonstrates an important relationship between total staffing measures and risk adjusted healthcare associated infection (HAI) rates. Using over 10,000 nursing homes located throughout the United States, we have found that adjusted HAI rates are lower in nursing homes that have higher measures of total staffing or better staffing rating scores.
+
+This provides additional evidence to support the need of increased nursing staff in a nursing home setting to improve patient safety and quality of care for nursing home residents.
+
+Because increased HAIs have substantial morbidity and mortality and additional healthcare costs, policy makers, payers, and consumers of healthcare should create incentive programs for nursing home administrators to increase their total staffing rates. By investing in increased staffing in the nursing home setting you may reduce HAIs and prevent unnecessary harm, prevent hospitalizations, and lower total healthcare costs.
 
 ## Strengths and Limitations
 
-*Discuss what you perceive as strengths and limitations of your analysis.*
+This study has strength that it is an assessment of a large number (over 10,000) nursing homes. It includes data from across the United States and represents the diverse landscape of long term care.
+
+Assessment of quality in nursing home settings is limited by the quality of the measures used to assess. Our analysis is limited in that it excludes nursing homes that were not able to ascertain a risk adjusted HAI rate. Missing data is mostly due to a small number of fee-for-service beneficiaries in that nursing home for the year, and may not be missing at random.
 
 ## Conclusions
 
 *What are the main take-home messages?*
 
 *Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end*
-
-This paper [@leek2015] discusses types of analyses.
-
-These papers [@mckay2020; @mckay2020a] are good examples of papers published using a fully reproducible setup similar to the one shown in this template.
-
-Note that this cited reference will show up at the end of the document, the reference formatting is determined by the CSL file specified in the YAML header. Many more style files for almost any journal [are available](https://www.zotero.org/styles). You also specify the location of your bibtex reference file in the YAML. You can call your reference file anything you like, I just used the generic word `references.bib` but giving it a more descriptive name is probably better.
 
 {{< pagebreak >}}
 
