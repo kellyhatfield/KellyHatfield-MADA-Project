@@ -1,0 +1,139 @@
+---
+title: Project Review Template 
+author: Kimberly Perez
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+# Overview
+
+Title of project: Evaluating Staffing Characteristics, Healthcare-associated Infections, and Provider Characteristics in U.S. Nursing Homes, 2021
+
+Name of project author(s): Kelly Hatfield 
+
+Name of project reviewer: Kimberly Perez
+
+
+## Background, Context and Motivation
+
+Very thorough background. I was able to follow along easily and while I do not know much about this topic, you draw in the reader with this section. Well-written with minor, if any, grammatical errors.
+
+### Summary assessment (PICK ONE, DELETE THE OTHERS)
+* strong contextualization and motivation
+
+
+## Question description
+How well and clear are the question(s)/hypotheses the project aims to address described? Is it clear how the questions relate to the data?
+
+
+### Feedback and Comments
+
+Your question was succinct and even provided a bit more background information on topic. Further clarifies the importance of your study/analysis. Consider including a hypothesis in conjunction with the objectives
+
+### Summary assessment
+* question/hypotheses fully clear
+
+
+## Data description
+How well is the data overall described? Is the source provided? Is a codebook or other meta-information available that makes it clear what the data is? 
+
+### Feedback and Comments
+Very clear explanation as to how the data was collected and additions made to the dataset. Your inclusion of the title of files is helpful when following along. 
+
+### Summary assessment
+* source and overall structure of data well explained
+
+
+## Data wrangling and exploratory analysis
+How well is the data cleaned/processed and explored? Are all steps reasonable and well explained? Are alternatives discussed and considered? Are meaningful exploratory results shown (e.g. in the supplementary materials)?
+
+### Feedback and Comments
+
+Great job with this section. I was able to execute the wrangling process with no issues! Nice work merging unique identifiers. I would consider adding some more notes to some sections as you walk through the process, however, if time is an issue, your current structure works! For your exploratory analysis, I received an error on line 175 (error in `line_check()`, I was not able to run the remaining code. 
+
+### Summary assessment
+* some weaknesses in wrangling and exploratory component
+
+## Appropriateness of Analysis
+
+### Feedback and Comments
+
+I received an error when attempting to run your analysis on line 67- Error in force(filename) : object ‘figure1’ not found. Manual intervention allowed me to run the remained of the code. The analysis seems to be sufficient based on the data. Consider including some more information on your outputs
+
+### Summary assessment
+* strong and reasonable analysis
+
+## Presentation
+
+### Feedback and Comments
+
+Overall, nice work with the figures and figure captions. Some coding exists in the manuscript but otherwise all figures look good. If you have time, you may want to consider editing table 1 as it is currently difficult to read and spans a few pages. 
+
+### Summary assessment
+* results are presented ok, with room for improvement
+
+
+## Discussion/Conclusions
+Are the study findings properly discussed? Are strengths and limitations acknowledged? Are findings interpreted properly?
+
+### Feedback and Comments
+
+I thought this area was really well written, succinct, and really drove home the point of your findings. I think expanding a bit upon the strengths and weaknesses and wrapping up with a short conclusion will really wrap-up your manuscript nicely!
+
+### Summary assessment
+* strong, complete and clear discussion
+
+
+## Further comments
+
+Nice job, Kelly! I think you are on your way to a great product!
+
+
+
+# Overall project content evaluation
+
+
+## Structure
+
+Overall, your project is nicely structured. The majority of your readme files are updated with information making your r script easy to follow. Some “junk” folders remain, specifically the “slides” and “supplement” folders found within the products folder.
+  
+### Summary assessment
+* well structured
+
+
+## Documentation 
+
+I think there is some room, specifically with your analysis, to include a bit more documentation (see above) but overall, you have items properly documented.
+
+### Summary assessment
+* decently documented with some gaps
+
+
+
+## Reproducibility
+Are all results fully reproducible? Is documentation provided which clearly explains how to reproduce things, and does it work without the need for any manual intervention? Are you able to re-run the whole analysis without having to do manual interventions/edits?
+
+### Feedback and Comments
+
+Overall, solid work. Some areas (mentioned above) produced errors but nothing major, with manual intervention, I was able to run the remaining code!
+
+### Summary assessment
+* small parts not reproducible or required manual intervention 
+
+
+## Thoroughness
+
+### Feedback and Comments
+Yes! I liked your inclusion of other models in your analysis script and would encourage you to add whatever is not used in your supplemental material qmd. Overall, I feel like your manuscript is thorough and will likely be very thorough for the final submission. 
+
+### Summary assessment
+* decent level of thoroughness
+
+
+## Further comments
+
+Great work, Kelly! I think you will have a great product with a bit of polishing! Please let me know if you have any questions or concerns moving forward.
