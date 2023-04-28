@@ -1,0 +1,130 @@
+---
+title: Project Review Template 
+author: Kailin (Kai) Chen
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+# Overview
+
+**Title of Project**: "Evaluating Staffing Characteristics, Healthcare-associated Infections, and Provider Characteristics in U.S. Nursing Homes, 2021"
+
+**Name of Project Author(s)**: Kelly Hatfield
+
+**Name of Project Reviewer**: Kailin (Kai) Chen
+
+# Specific Project Content Evaluation
+
+## Background, Context, and Motivation
+How well is the context of the project described? Is a comprehensive background, including summary of previous/related work given? Is the project well placed into the context of existing work (including proper referencing of existing work). Is it clear why the project was undertaken and what new information it hopes to provide?
+
+### Feedback and Comments
+
+The project context is well-described with a comprehensive background referencing the target population, served by residential long-term care through skilled nursing facilities and nursing homes, being at risk for significant morbidity and mortality by infections. It is well-placed in the context of existing work, as this project points out previous research does not link together staffing metrics with healthcare-associated infections, which the author now intends to explain through this data analysis project.
+
+### Summary Assessment
+*   Strong contextualization and motivation
+
+## Question Description
+How well and clear are the question(s)/hypotheses the project aims to address described? Is it clear how the questions relate to the data?
+
+### Feedback and Comments
+No specific question or hypothesis was present in this project, only that the author aims "to assess the association of nursing home staff star ratings with the healthcare associated infection rate in participating nursing homes". It should be made clear in the future what the question (presumably "What is the association of nursing home staff star ratings with the healthcare-associated infection rate in participating nursing homes?") and hypothesis are.
+
+### Summary Assessment
+*   Question/hypothesis unclear
+
+## Data Description
+How well is the data overall described? Is the source provided? Is a codebook or other meta-information available that makes it clear what the data is? 
+
+### Feedback and Comments
+Overall, the data is well-described and has a source provided (Centers for Medicare Services). No meta-information, other than a data dictionary, was given to further explain the data. It would be preferable for the author to explicitly mention that *both* datasets used are found from the linked website's downloadable zip files, as well as which zip file was downloaded specifically.
+
+### Summary Assessment
+*   Source and overall structure of data well explained
+
+## Data Wrangling and Exploratory Analysis
+How well is the data cleaned/processed and explored? Are all steps reasonable and well explained? Are alternatives discussed and considered? Are meaningful exploratory results shown (e.g. in the supplementary materials)?
+
+### Feedback and Comments
+Data cleaning and processing steps seem very straightforward and reasonable, though from only viewing the the manuscript, no detail is given as to *why* these steps were chosen. Meaningful exploratory analysis results are shown in the manuscript regarding general relationships between nursing staff and healthcare-associated infections.
+
+### Summary Assessment
+*   Some weaknesses in wrangling and exploratory analysis
+
+## Appropriateness of Analysis
+Were the analysis methods appropriate for the data? Was the analysis done properly? Were different components of the analysis (e.g. performance measure, variable selection, data pre-processing, model evaluation) done in the best way possible and explained well?
+
+### Feedback and Comments
+The analysis methods used (bivariate analysis and multivariate models) were appropriate for the data, and analysis was done properly. Different steps of the analysis were completed using the most suitable methodologies (ex: variable selection based on existing literature and model evaluation based on RMSE). 
+
+### Summary Assessment
+*   Strong and reasonable analysis
+
+## Presentation
+How well are results presented? Are tables and figures easy to read and understand? Are the main figures/tables publication level quality? 
+
+### Feedback and Comments
+Overall, results feel unpolished. Most figures were easy to read, but one graph (Figure 1c?) appeared incomplete without an x-axis title. Labeling of figures as 1, 2, 3, etc. were not consistent. Additionally, the author had written "we selected 75% of the data which represented XX nursing homes"; XX seems to be a placeholder for a number. The table added into the manuscript could be presented better as well. I would advise the author to review this section for completeness and appearance quality.
+
+### Summary Assessment
+*   Results are presented ok, with room for improvement
+
+## Discussion/Conclusions
+Are the study findings properly discussed? Are strengths and limitations acknowledged? Are findings interpreted properly?
+
+### Feedback and Comments
+Study findings and strengths/limitations are interpreted and discussed properly, but the conclusion section is blank.
+
+### Summary Assessment
+*   Minor parts wrong, missing, or unclear
+
+## Further Comments
+As previously mentioned, I would suggest reviewing your exploratory and statistical analyses for completeness and appearance in addition to looking over your entire manuscript for completeness.
+
+# Overall Project Content Evaluation
+
+## Structure
+Is the project well structured? Are files in well labeled folders? Do files have reasonable names? Are all "junk" files not needed for analysis/reproduction removed? By just looking at files and folders, can you get an idea of how things fit together?
+
+### Feedback and Comments
+The project is well-structured overall, with pertinent files in appropriately-labeled folders that indicate workflow. However, not all template files were removed, such as the `slides` subdirectory in `products` and `supplement` under the `manuscript` subdirectory. It is also a good idea to look over `analysis for paper.qmd` and `exploratory_analysis.qmd` and tidy up those sections.
+
+### Summary Assessment
+*   Mostly clear but some confusing parts (e.g. useless files, things in the wrong folders)
+
+## Documentation 
+How well is the project documented? Are you able to understand each step of the whole analysis, each decision that was made, and each line of code? Is enough information provided as comments in code or as part of Rmd files? 
+
+### Feedback and Comments
+
+Across the different qmd files for this analysis, the project is overall well-documented, and I was able to understand the majority of steps for the analysis.
+
+### Summary Assessment
+*   Fully and well documented
+
+## Reproducibility
+Are all results fully reproducible? Is documentation provided which clearly explains how to reproduce things, and does it work without the need for any manual intervention? Are you able to re-run the whole analysis without having to do manual interventions/edits?
+
+### Feedback and Comments
+
+Portions of `exploratory_analysis.qmd` and `analysis for paper.qmd` are not reproducible without manual intervention. 
+
+### Summary Assessment
+*   Small parts not reproducible or required manual intervention 
+
+## Thoroughness
+How thorough was the overall study? Were alternatives (e.g. different ways of processing the data or different models) considered? Were alternatives discussed? Were the questions/hypotheses fully and thoroughly addressed?
+
+### Feedback and Comments
+
+The study overall had a decent level of thoroughness, but the statistical analysis focused on standard regression modeling (even for the machine learning component). I believe this author's results addressed what they were looking for, even if a specific question/hypothesis was never made clear,
+
+### Summary Assessment
+*   Decent level of thoroughness
+
+## Further Comments
+A good way to check reproducibility is to completely clear the environment and run all qmd files in the way you intend them to be run. Double-check that any template remnants are gone in your review.
