@@ -153,9 +153,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 tidyverse 1.3.2 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ ggplot2 3.4.0      ✔ purrr   1.0.0 
+<pre><code>✔ ggplot2 3.4.0      ✔ purrr   1.0.1 
 ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-✔ tidyr   1.2.1      ✔ stringr 1.5.0 
+✔ tidyr   1.3.0      ✔ stringr 1.5.0 
 ✔ readr   2.1.3      ✔ forcats 0.5.2 
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
@@ -163,17 +163,46 @@ tidyverse 1.3.2 ──</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.0.0 ──
+✔ broom        1.0.2     ✔ rsample      1.1.1
+✔ dials        1.1.0     ✔ tune         1.0.1
+✔ infer        1.0.4     ✔ workflows    1.1.2
+✔ modeldata    1.0.1     ✔ workflowsets 1.0.0
+✔ parsnip      1.0.3     ✔ yardstick    1.1.0
+✔ recipes      1.0.4     
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ scales::discard() masks purrr::discard()
+✖ dplyr::filter()   masks stats::filter()
+✖ recipes::fixed()  masks stringr::fixed()
+✖ dplyr::lag()      masks stats::lag()
+✖ yardstick::spec() masks readr::spec()
+✖ recipes::step()   masks stats::step()
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'performance'
+
+The following objects are masked from 'package:yardstick':
+
+    mae, rmse</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Load the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Path to data. Note the use of the here() package and not absolute paths</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"processed_data"</span>,<span class="st">"processeddata.rds"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#load data</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_location)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Reminder of variable names</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(mydata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Path to data. Note the use of the here() package and not absolute paths</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data_location <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"processed_data"</span>,<span class="st">"processeddata.rds"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#load data</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(data_location)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Reminder of variable names</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(mydata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day"
  [2] "Average.Number.of.Residents.per.Day"                     
@@ -196,8 +225,8 @@ tidyverse 1.3.2 ──</code></pre>
 <h1>Data exploration through tables</h1>
 <p>Showing a bit of code to produce and save a summary table.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="ot">=</span> skimr<span class="sc">::</span><span class="fu">skim</span>(mydata)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="ot">=</span> skimr<span class="sc">::</span><span class="fu">skim</span>(mydata)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>── Data Summary ────────────────────────
                            Values
@@ -247,9 +276,9 @@ Group variables            None
 8         1     99.2  86.4   25      44    72    121    1129   ▇▁▁▁▁
 9         1      7.68  1.81   3.12    6.39  7.41   8.68   21.7 ▅▇▁▁▁</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save to file</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>summarytable_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>, <span class="st">"summarytable.rds"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(summary_df, <span class="at">file =</span> summarytable_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save to file</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>summarytable_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>, <span class="st">"summarytable.rds"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(summary_df, <span class="at">file =</span> summarytable_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We are saving the results to the <code>results</code> folder. Depending on how many tables/figures you have, it might make sense to have separate folders for each. And/or you could have separate folders for exploratory tables/figures and for final tables/figures. Just choose a setup that makes sense for your project and works for you, and provide enough documentation that someone can understand what you are doing.</p>
 </section>
@@ -258,16 +287,16 @@ Group variables            None
 <p>Histogram plots for the continuous outcomes.</p>
 <p>First, Risk Standardized HAI Rate</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"RiskStandardized_HAI_Rate_distribution.png"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p1) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"RiskStandardized_HAI_Rate_distribution.png"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p1) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
@@ -275,8 +304,18 @@ Group variables            None
 </div>
 <p>Now Total Nurse Staffing per Resident per Day</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mytitle <span class="ot">&lt;-</span> <span class="st">"Figure: Distribution of adjusted total nursing staffing hours per resident per day"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">labs</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Adjusted total nursing staffing hours per resident per day"</span>,              <span class="co"># x axis title</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Count of Nursing Homes"</span>,   <span class="co"># y axis title</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title=</span>  <span class="fu">str_wrap</span>(mytitle, <span class="dv">60</span>) ,      <span class="co"># main title of figure</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"Continent"</span>      <span class="co"># title of legend</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 </div>
@@ -286,8 +325,8 @@ Group variables            None
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"Adj_Tot_Staff_prpd.png"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p2) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"Adj_Tot_Staff_prpd.png"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p2) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
@@ -298,8 +337,8 @@ Group variables            None
 </div>
 <p>Now showing relationship between staffing and HAI rates</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, <span class="at">y=</span>HAI_039_RS_Rate, <span class="at">color=</span>Staffing.Rating)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, <span class="at">y=</span>HAI_039_RS_Rate, <span class="at">color=</span>Staffing.Rating)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -319,8 +358,8 @@ Group variables            None
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_hai.png"</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p3) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_hai.png"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p3) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image
 `geom_smooth()` using formula = 'y ~ x'</code></pre>
@@ -338,32 +377,94 @@ Group variables            None
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 262 rows containing missing values (`geom_point()`).</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>p3b <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(Staffing.Rating), <span class="at">y=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="at">width=</span><span class="fl">0.15</span>, <span class="at">alpha=</span><span class="fl">0.08</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"white"</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p3b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>p3b <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(Staffing.Rating), <span class="at">y=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="at">width=</span><span class="fl">0.15</span>, <span class="at">alpha=</span><span class="fl">0.08</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"white"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p3b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staffrating_hai.png"</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p3b) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staffrating_hai.png"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p3b) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 </div>
 <p>Once more height as function of weight, stratified by ownership type.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(Ownership.Type), <span class="at">y=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>mydata <span class="sc">%&gt;%</span> <span class="fu">count</span>(Ownership.Type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Ownership.Type    n
+1                For profit - Corporation 4722
+2                 For profit - Individual  526
+3  For profit - Limited Liability company 1835
+4                For profit - Partnership  480
+5                       Government - City   19
+6                Government - City/county   36
+7                     Government - County  241
+8                    Government - Federal    6
+9          Government - Hospital district  173
+10                     Government - State   24
+11            Non profit - Church related  255
+12               Non profit - Corporation 1918
+13                     Non profit - Other  267</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>owner <span class="ot">&lt;-</span> <span class="fu">substr</span>(mydata<span class="sc">$</span>Ownership.Type, <span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(mydata<span class="sc">$</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, <span class="fu">list</span>(mydata<span class="sc">$</span>owner), <span class="at">FUN=</span>mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Group.1        x
+1 For profit 3.488447
+2 Government 3.842531
+3 Non profit 4.184171</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(mydata<span class="sc">$</span>HAI_039_RS_Rate, <span class="fu">list</span>(mydata<span class="sc">$</span>owner), <span class="at">FUN=</span>mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Group.1        x
+1 For profit 7.911076
+2 Government 7.410741
+3 Non profit 7.008004</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(owner), <span class="at">y=</span>HAI_039_RS_Rate)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_hai_ownership.png"</span>)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p4) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"hai_ownership.png"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p4) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image
 `geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(mydata)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(owner), <span class="at">y=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 262 rows containing non-finite values (`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 262 rows containing non-finite values (`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_ownership.png"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p5) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 262 rows containing non-finite values (`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 262 rows containing non-finite values (`stat_smooth()`).</code></pre>
 </div>
 </div>
 </section>
@@ -371,8 +472,8 @@ Group variables            None
 <h1>Changing our outcome</h1>
 <p>In this plot we categorized our outcome as a 3-level variable: better than the national rate, worse than the national rate or no different than the national rate.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span>  mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(COMP_PERF), <span class="at">y=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="at">width=</span><span class="fl">0.15</span>, <span class="at">alpha=</span><span class="fl">0.08</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"white"</span>)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span>  mydata <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(COMP_PERF), <span class="at">y=</span>Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="at">width=</span><span class="fl">0.15</span>, <span class="at">alpha=</span><span class="fl">0.08</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"white"</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 262 rows containing non-finite values (`stat_boxplot()`).</code></pre>
 </div>
@@ -382,8 +483,8 @@ Group variables            None
 <div class="cell-output-display">
 <p><img src="exploratory_analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_hai_compscore.png"</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p5) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>figure_file <span class="ot">=</span> <span class="fu">here</span>(<span class="st">"results"</span>,<span class="st">"staff_hai_compscore.png"</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> figure_file, <span class="at">plot=</span>p5) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
@@ -393,8 +494,20 @@ Removed 262 rows containing missing values (`geom_point()`).</code></pre>
 </div>
 </div>
 <p>We find that while nursing homes who have rates better than the national rate do appear to have higher staffing scores, nursing homes no different and worse than the national rate appear more similar in distribution.</p>
-<section id="modeling-fun" class="level2">
-<h2 class="anchored" data-anchor-id="modeling-fun">Modeling Fun</h2>
+<section id="modeling-exercises" class="level2">
+<h2 class="anchored" data-anchor-id="modeling-exercises">Modeling Exercises</h2>
+<p>First, I have decided to split the dataset into test and training sets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix the random numbers by setting the seed </span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This enables the analysis to be reproducible when random numbers are used </span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">555</span>)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Put 3/4 of the data into the training set </span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(mydata, <span class="at">prop =</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">4</span>)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data frames for the two sets:</span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>For this section I have decided I am going to assess if staffing rating adds additional information to my model that includes staffing rate. For this model we will use the risk adjusted HAI rate as a continuous outcome. We will use a linear model. We will make three models:</p>
 <ol type="1">
 <li>Model with staffing rate and other covariates of interest (Ownership Type, Average Number of Residents per Day, and staffing rate (the continuous value)</li>
@@ -402,326 +515,109 @@ Removed 262 rows containing missing values (`geom_point()`).</code></pre>
 <li>Model with both staffing rating and staffing rate + other covariates of interest</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Model 1</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAI_039_RS_Rate <span class="sc">~</span> <span class="fu">as.factor</span>(Ownership.Type) <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day <span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score, <span class="at">data=</span>mydata)</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Model 1</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>recipe_1 <span class="ot">&lt;-</span> <span class="fu">recipe</span>(HAI_039_RS_Rate <span class="sc">~</span> owner <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day <span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score, <span class="at">data=</span> train_data)</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>recipe_2 <span class="ot">&lt;-</span> <span class="fu">recipe</span>(HAI_039_RS_Rate <span class="sc">~</span> owner <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score <span class="sc">+</span> Staffing.Rating, <span class="at">data=</span> train_data)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>recipe_3 <span class="ot">&lt;-</span> <span class="fu">recipe</span>(HAI_039_RS_Rate <span class="sc">~</span> owner <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day <span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score <span class="sc">+</span> Staffing.Rating, <span class="at">data=</span> train_data)</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a><span class="co">#model: linear regression using GLM engine</span></span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>ln_mod <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> <span class="fu">set_engine</span> (<span class="st">"lm"</span>)</span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="co">#workflow: tying together linear model and recipe of chocie</span></span>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a>wflow1 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> <span class="fu">add_model</span>(ln_mod) <span class="sc">%&gt;%</span> <span class="fu">add_recipe</span>(recipe_1)</span>
+<span id="cb65-18"><a href="#cb65-18" aria-hidden="true" tabindex="-1"></a>wflow2 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> <span class="fu">add_model</span>(ln_mod) <span class="sc">%&gt;%</span> <span class="fu">add_recipe</span>(recipe_2)</span>
+<span id="cb65-19"><a href="#cb65-19" aria-hidden="true" tabindex="-1"></a>wflow3 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> <span class="fu">add_model</span>(ln_mod) <span class="sc">%&gt;%</span> <span class="fu">add_recipe</span>(recipe_3)</span>
+<span id="cb65-20"><a href="#cb65-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-21"><a href="#cb65-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Fitting the model to train dataset</span></span>
+<span id="cb65-22"><a href="#cb65-22" aria-hidden="true" tabindex="-1"></a>model_fit1 <span class="ot">&lt;-</span> wflow1 <span class="sc">%&gt;%</span>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span>
+<span id="cb65-23"><a href="#cb65-23" aria-hidden="true" tabindex="-1"></a>model_fit2 <span class="ot">&lt;-</span> wflow2 <span class="sc">%&gt;%</span>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span>
+<span id="cb65-24"><a href="#cb65-24" aria-hidden="true" tabindex="-1"></a>model_fit3 <span class="ot">&lt;-</span> wflow3 <span class="sc">%&gt;%</span>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span>
+<span id="cb65-25"><a href="#cb65-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-26"><a href="#cb65-26" aria-hidden="true" tabindex="-1"></a><span class="co">#Looking at model output;</span></span>
+<span id="cb65-27"><a href="#cb65-27" aria-hidden="true" tabindex="-1"></a>model_fit1 <span class="sc">%&gt;%</span> <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + 
-    Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + 
-    Number.of.Citations.from.Infection.Control.Inspections + 
-    Total.Weighted.Health.Survey.Score, data = mydata)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.4760 -1.2117 -0.2364  0.9860 13.9718 
-
-Coefficients:
-                                                                  Estimate
-(Intercept)                                                      8.2070144
-as.factor(Ownership.Type)For profit - Individual                 0.3271201
-as.factor(Ownership.Type)For profit - Limited Liability company  0.2235374
-as.factor(Ownership.Type)For profit - Partnership                0.2109578
-as.factor(Ownership.Type)Government - City                      -0.7280818
-as.factor(Ownership.Type)Government - City/county               -0.4183505
-as.factor(Ownership.Type)Government - County                    -0.4644302
-as.factor(Ownership.Type)Government - Federal                   -0.9563757
-as.factor(Ownership.Type)Government - Hospital district         -0.0765009
-as.factor(Ownership.Type)Government - State                     -0.2116840
-as.factor(Ownership.Type)Non profit - Church related            -0.7976154
-as.factor(Ownership.Type)Non profit - Corporation               -0.6118238
-as.factor(Ownership.Type)Non profit - Other                     -0.2218036
-Average.Number.of.Residents.per.Day                              0.0031329
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day        -0.2192510
-Number.of.Citations.from.Infection.Control.Inspections           0.0330311
-Total.Weighted.Health.Survey.Score                               0.0005870
-                                                                Std. Error
-(Intercept)                                                      0.0938751
-as.factor(Ownership.Type)For profit - Individual                 0.0806930
-as.factor(Ownership.Type)For profit - Limited Liability company  0.0483734
-as.factor(Ownership.Type)For profit - Partnership                0.0843416
-as.factor(Ownership.Type)Government - City                       0.3987607
-as.factor(Ownership.Type)Government - City/county                0.3028721
-as.factor(Ownership.Type)Government - County                     0.1164191
-as.factor(Ownership.Type)Government - Federal                    0.7077293
-as.factor(Ownership.Type)Government - Hospital district          0.1358985
-as.factor(Ownership.Type)Government - State                      0.3901375
-as.factor(Ownership.Type)Non profit - Church related             0.1156147
-as.factor(Ownership.Type)Non profit - Corporation                0.0499020
-as.factor(Ownership.Type)Non profit - Other                      0.1110642
-Average.Number.of.Residents.per.Day                              0.0003646
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day         0.0212224
-Number.of.Citations.from.Infection.Control.Inspections           0.0071187
-Total.Weighted.Health.Survey.Score                               0.0002418
-                                                                t value
-(Intercept)                                                      87.425
-as.factor(Ownership.Type)For profit - Individual                  4.054
-as.factor(Ownership.Type)For profit - Limited Liability company   4.621
-as.factor(Ownership.Type)For profit - Partnership                 2.501
-as.factor(Ownership.Type)Government - City                       -1.826
-as.factor(Ownership.Type)Government - City/county                -1.381
-as.factor(Ownership.Type)Government - County                     -3.989
-as.factor(Ownership.Type)Government - Federal                    -1.351
-as.factor(Ownership.Type)Government - Hospital district          -0.563
-as.factor(Ownership.Type)Government - State                      -0.543
-as.factor(Ownership.Type)Non profit - Church related             -6.899
-as.factor(Ownership.Type)Non profit - Corporation               -12.261
-as.factor(Ownership.Type)Non profit - Other                      -1.997
-Average.Number.of.Residents.per.Day                               8.592
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day        -10.331
-Number.of.Citations.from.Infection.Control.Inspections            4.640
-Total.Weighted.Health.Survey.Score                                2.427
-                                                                Pr(&gt;|t|)    
-(Intercept)                                                      &lt; 2e-16 ***
-as.factor(Ownership.Type)For profit - Individual                5.07e-05 ***
-as.factor(Ownership.Type)For profit - Limited Liability company 3.86e-06 ***
-as.factor(Ownership.Type)For profit - Partnership                 0.0124 *  
-as.factor(Ownership.Type)Government - City                        0.0679 .  
-as.factor(Ownership.Type)Government - City/county                 0.1672    
-as.factor(Ownership.Type)Government - County                    6.67e-05 ***
-as.factor(Ownership.Type)Government - Federal                     0.1766    
-as.factor(Ownership.Type)Government - Hospital district           0.5735    
-as.factor(Ownership.Type)Government - State                       0.5874    
-as.factor(Ownership.Type)Non profit - Church related            5.55e-12 ***
-as.factor(Ownership.Type)Non profit - Corporation                &lt; 2e-16 ***
-as.factor(Ownership.Type)Non profit - Other                       0.0458 *  
-Average.Number.of.Residents.per.Day                              &lt; 2e-16 ***
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day         &lt; 2e-16 ***
-Number.of.Citations.from.Infection.Control.Inspections          3.53e-06 ***
-Total.Weighted.Health.Survey.Score                                0.0152 *  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.732 on 10217 degrees of freedom
-  (268 observations deleted due to missingness)
-Multiple R-squared:  0.07963,   Adjusted R-squared:  0.07819 
-F-statistic: 55.25 on 16 and 10217 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code># A tibble: 7 × 5
+  term                                         estimate std.e…¹ stati…²  p.value
+  &lt;chr&gt;                                           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)                                   8.35e+0 1.06e-1   79.1  0       
+2 ownerGovernment                              -2.92e-1 9.62e-2   -3.04 2.39e- 3
+3 ownerNon profit                              -6.33e-1 4.96e-2  -12.8  5.99e-37
+4 Average.Number.of.Residents.per.Day           3.03e-3 4.10e-4    7.38 1.80e-13
+5 Adjusted.Total.Nurse.Staffing.Hours.per.Res… -2.39e-1 2.40e-2   -9.95 3.63e-23
+6 Number.of.Citations.from.Infection.Control.…  3.52e-2 8.20e-3    4.29 1.84e- 5
+7 Total.Weighted.Health.Survey.Score            5.63e-4 2.81e-4    2.00 4.50e- 2
+# … with abbreviated variable names ¹​std.error, ²​statistic</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAI_039_RS_Rate <span class="sc">~</span> <span class="fu">as.factor</span>(Ownership.Type) <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> <span class="fu">as.factor</span>(Staffing.Rating)<span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score, <span class="at">data=</span>mydata)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>model_fit2 <span class="sc">%&gt;%</span> <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + 
-    as.factor(Staffing.Rating) + Number.of.Citations.from.Infection.Control.Inspections + 
-    Total.Weighted.Health.Survey.Score, data = mydata)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.3018 -1.2245 -0.2384  0.9790 14.2559 
-
-Coefficients:
-                                                                  Estimate
-(Intercept)                                                      7.6634637
-as.factor(Ownership.Type)For profit - Individual                 0.3014608
-as.factor(Ownership.Type)For profit - Limited Liability company  0.2293832
-as.factor(Ownership.Type)For profit - Partnership                0.2045215
-as.factor(Ownership.Type)Government - City                      -0.5176030
-as.factor(Ownership.Type)Government - City/county               -0.3136779
-as.factor(Ownership.Type)Government - County                    -0.3258040
-as.factor(Ownership.Type)Government - Federal                   -0.9307994
-as.factor(Ownership.Type)Government - Hospital district         -0.1252948
-as.factor(Ownership.Type)Government - State                     -0.1708684
-as.factor(Ownership.Type)Non profit - Church related            -0.6736603
-as.factor(Ownership.Type)Non profit - Corporation               -0.5212022
-as.factor(Ownership.Type)Non profit - Other                     -0.1457518
-Average.Number.of.Residents.per.Day                              0.0030860
-as.factor(Staffing.Rating)2                                     -0.1285560
-as.factor(Staffing.Rating)3                                     -0.2410240
-as.factor(Staffing.Rating)4                                     -0.5527374
-as.factor(Staffing.Rating)5                                     -0.9639688
-Number.of.Citations.from.Infection.Control.Inspections           0.0256540
-Total.Weighted.Health.Survey.Score                               0.0004328
-                                                                Std. Error
-(Intercept)                                                      0.0512991
-as.factor(Ownership.Type)For profit - Individual                 0.0799721
-as.factor(Ownership.Type)For profit - Limited Liability company  0.0481259
-as.factor(Ownership.Type)For profit - Partnership                0.0834817
-as.factor(Ownership.Type)Government - City                       0.3985662
-as.factor(Ownership.Type)Government - City/county                0.2898217
-as.factor(Ownership.Type)Government - County                     0.1156796
-as.factor(Ownership.Type)Government - Federal                    0.7063778
-as.factor(Ownership.Type)Government - Hospital district          0.1351089
-as.factor(Ownership.Type)Government - State                      0.3712686
-as.factor(Ownership.Type)Non profit - Church related             0.1149557
-as.factor(Ownership.Type)Non profit - Corporation                0.0503381
-as.factor(Ownership.Type)Non profit - Other                      0.1102120
-Average.Number.of.Residents.per.Day                              0.0003543
-as.factor(Staffing.Rating)2                                      0.0472649
-as.factor(Staffing.Rating)3                                      0.0497998
-as.factor(Staffing.Rating)4                                      0.0533471
-as.factor(Staffing.Rating)5                                      0.0749135
-Number.of.Citations.from.Infection.Control.Inspections           0.0071054
-Total.Weighted.Health.Survey.Score                               0.0002430
-                                                                t value
-(Intercept)                                                     149.388
-as.factor(Ownership.Type)For profit - Individual                  3.770
-as.factor(Ownership.Type)For profit - Limited Liability company   4.766
-as.factor(Ownership.Type)For profit - Partnership                 2.450
-as.factor(Ownership.Type)Government - City                       -1.299
-as.factor(Ownership.Type)Government - City/county                -1.082
-as.factor(Ownership.Type)Government - County                     -2.816
-as.factor(Ownership.Type)Government - Federal                    -1.318
-as.factor(Ownership.Type)Government - Hospital district          -0.927
-as.factor(Ownership.Type)Government - State                      -0.460
-as.factor(Ownership.Type)Non profit - Church related             -5.860
-as.factor(Ownership.Type)Non profit - Corporation               -10.354
-as.factor(Ownership.Type)Non profit - Other                      -1.322
-Average.Number.of.Residents.per.Day                               8.709
-as.factor(Staffing.Rating)2                                      -2.720
-as.factor(Staffing.Rating)3                                      -4.840
-as.factor(Staffing.Rating)4                                     -10.361
-as.factor(Staffing.Rating)5                                     -12.868
-Number.of.Citations.from.Infection.Control.Inspections            3.610
-Total.Weighted.Health.Survey.Score                                1.781
-                                                                Pr(&gt;|t|)    
-(Intercept)                                                      &lt; 2e-16 ***
-as.factor(Ownership.Type)For profit - Individual                0.000164 ***
-as.factor(Ownership.Type)For profit - Limited Liability company 1.90e-06 ***
-as.factor(Ownership.Type)For profit - Partnership               0.014306 *  
-as.factor(Ownership.Type)Government - City                      0.194089    
-as.factor(Ownership.Type)Government - City/county               0.279139    
-as.factor(Ownership.Type)Government - County                    0.004865 ** 
-as.factor(Ownership.Type)Government - Federal                   0.187631    
-as.factor(Ownership.Type)Government - Hospital district         0.353760    
-as.factor(Ownership.Type)Government - State                     0.645362    
-as.factor(Ownership.Type)Non profit - Church related            4.77e-09 ***
-as.factor(Ownership.Type)Non profit - Corporation                &lt; 2e-16 ***
-as.factor(Ownership.Type)Non profit - Other                     0.186042    
-Average.Number.of.Residents.per.Day                              &lt; 2e-16 ***
-as.factor(Staffing.Rating)2                                     0.006541 ** 
-as.factor(Staffing.Rating)3                                     1.32e-06 ***
-as.factor(Staffing.Rating)4                                      &lt; 2e-16 ***
-as.factor(Staffing.Rating)5                                      &lt; 2e-16 ***
-Number.of.Citations.from.Infection.Control.Inspections          0.000307 ***
-Total.Weighted.Health.Survey.Score                              0.074875 .  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.728 on 10315 degrees of freedom
-  (167 observations deleted due to missingness)
-Multiple R-squared:  0.08787,   Adjusted R-squared:  0.08619 
-F-statistic:  52.3 on 19 and 10315 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code># A tibble: 7 × 5
+  term                                         estimate std.e…¹ stati…²  p.value
+  &lt;chr&gt;                                           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)                                   8.04e+0 6.42e-2  125.   0       
+2 ownerGovernment                              -2.78e-1 9.47e-2   -2.93 3.35e- 3
+3 ownerNon profit                              -5.56e-1 4.99e-2  -11.1  1.25e-28
+4 Average.Number.of.Residents.per.Day           3.15e-3 3.95e-4    7.96 1.97e-15
+5 Number.of.Citations.from.Infection.Control.…  2.61e-2 8.15e-3    3.21 1.35e- 3
+6 Total.Weighted.Health.Survey.Score            3.65e-4 2.80e-4    1.30 1.93e- 1
+7 Staffing.Rating                              -2.25e-1 1.67e-2  -13.5  6.03e-41
+# … with abbreviated variable names ¹​std.error, ²​statistic</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>model3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(HAI_039_RS_Rate <span class="sc">~</span> <span class="fu">as.factor</span>(Ownership.Type) <span class="sc">+</span> Average.Number.of.Residents.per.Day <span class="sc">+</span> Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day<span class="sc">+</span> <span class="fu">as.factor</span>(Staffing.Rating) <span class="sc">+</span> Number.of.Citations.from.Infection.Control.Inspections <span class="sc">+</span> Total.Weighted.Health.Survey.Score, <span class="at">data=</span>mydata)</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>model_fit3 <span class="sc">%&gt;%</span> <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + 
-    Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + 
-    as.factor(Staffing.Rating) + Number.of.Citations.from.Infection.Control.Inspections + 
-    Total.Weighted.Health.Survey.Score, data = mydata)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--4.3647 -1.2176 -0.2368  0.9788 14.2480 
-
-Coefficients:
-                                                                  Estimate
-(Intercept)                                                      7.7139654
-as.factor(Ownership.Type)For profit - Individual                 0.3068870
-as.factor(Ownership.Type)For profit - Limited Liability company  0.2178713
-as.factor(Ownership.Type)For profit - Partnership                0.2054094
-as.factor(Ownership.Type)Government - City                      -0.5164345
-as.factor(Ownership.Type)Government - City/county               -0.2897123
-as.factor(Ownership.Type)Government - County                    -0.3459202
-as.factor(Ownership.Type)Government - Federal                   -0.9265591
-as.factor(Ownership.Type)Government - Hospital district         -0.1125460
-as.factor(Ownership.Type)Government - State                     -0.0568732
-as.factor(Ownership.Type)Non profit - Church related            -0.6622448
-as.factor(Ownership.Type)Non profit - Corporation               -0.5129555
-as.factor(Ownership.Type)Non profit - Other                     -0.1254348
-Average.Number.of.Residents.per.Day                              0.0031629
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day        -0.0170290
-as.factor(Staffing.Rating)2                                     -0.1289877
-as.factor(Staffing.Rating)3                                     -0.2351567
-as.factor(Staffing.Rating)4                                     -0.5383925
-as.factor(Staffing.Rating)5                                     -0.9345178
-Number.of.Citations.from.Infection.Control.Inspections           0.0272307
-Total.Weighted.Health.Survey.Score                               0.0004006
-                                                                Std. Error
-(Intercept)                                                      0.1066407
-as.factor(Ownership.Type)For profit - Individual                 0.0805530
-as.factor(Ownership.Type)For profit - Limited Liability company  0.0483874
-as.factor(Ownership.Type)For profit - Partnership                0.0841624
-as.factor(Ownership.Type)Government - City                       0.3976523
-as.factor(Ownership.Type)Government - City/county                0.3018338
-as.factor(Ownership.Type)Government - County                     0.1166703
-as.factor(Ownership.Type)Government - Federal                    0.7047748
-as.factor(Ownership.Type)Government - Hospital district          0.1360054
-as.factor(Ownership.Type)Government - State                      0.3889410
-as.factor(Ownership.Type)Non profit - Church related             0.1162199
-as.factor(Ownership.Type)Non profit - Corporation                0.0507011
-as.factor(Ownership.Type)Non profit - Other                      0.1110312
-Average.Number.of.Residents.per.Day                              0.0003664
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day         0.0292242
-as.factor(Staffing.Rating)2                                      0.0490105
-as.factor(Staffing.Rating)3                                      0.0548664
-as.factor(Staffing.Rating)4                                      0.0652738
-as.factor(Staffing.Rating)5                                      0.0989279
-Number.of.Citations.from.Infection.Control.Inspections           0.0071940
-Total.Weighted.Health.Survey.Score                               0.0002488
-                                                                t value
-(Intercept)                                                      72.336
-as.factor(Ownership.Type)For profit - Individual                  3.810
-as.factor(Ownership.Type)For profit - Limited Liability company   4.503
-as.factor(Ownership.Type)For profit - Partnership                 2.441
-as.factor(Ownership.Type)Government - City                       -1.299
-as.factor(Ownership.Type)Government - City/county                -0.960
-as.factor(Ownership.Type)Government - County                     -2.965
-as.factor(Ownership.Type)Government - Federal                    -1.315
-as.factor(Ownership.Type)Government - Hospital district          -0.828
-as.factor(Ownership.Type)Government - State                      -0.146
-as.factor(Ownership.Type)Non profit - Church related             -5.698
-as.factor(Ownership.Type)Non profit - Corporation               -10.117
-as.factor(Ownership.Type)Non profit - Other                      -1.130
-Average.Number.of.Residents.per.Day                               8.632
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day         -0.583
-as.factor(Staffing.Rating)2                                      -2.632
-as.factor(Staffing.Rating)3                                      -4.286
-as.factor(Staffing.Rating)4                                      -8.248
-as.factor(Staffing.Rating)5                                      -9.446
-Number.of.Citations.from.Infection.Control.Inspections            3.785
-Total.Weighted.Health.Survey.Score                                1.610
-                                                                Pr(&gt;|t|)    
-(Intercept)                                                      &lt; 2e-16 ***
-as.factor(Ownership.Type)For profit - Individual                0.000140 ***
-as.factor(Ownership.Type)For profit - Limited Liability company 6.79e-06 ***
-as.factor(Ownership.Type)For profit - Partnership               0.014679 *  
-as.factor(Ownership.Type)Government - City                      0.194073    
-as.factor(Ownership.Type)Government - City/county               0.337158    
-as.factor(Ownership.Type)Government - County                    0.003034 ** 
-as.factor(Ownership.Type)Government - Federal                   0.188644    
-as.factor(Ownership.Type)Government - Hospital district         0.407967    
-as.factor(Ownership.Type)Government - State                     0.883746    
-as.factor(Ownership.Type)Non profit - Church related            1.24e-08 ***
-as.factor(Ownership.Type)Non profit - Corporation                &lt; 2e-16 ***
-as.factor(Ownership.Type)Non profit - Other                     0.258618    
-Average.Number.of.Residents.per.Day                              &lt; 2e-16 ***
-Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day        0.560106    
-as.factor(Staffing.Rating)2                                     0.008505 ** 
-as.factor(Staffing.Rating)3                                     1.84e-05 ***
-as.factor(Staffing.Rating)4                                      &lt; 2e-16 ***
-as.factor(Staffing.Rating)5                                      &lt; 2e-16 ***
-Number.of.Citations.from.Infection.Control.Inspections          0.000154 ***
-Total.Weighted.Health.Survey.Score                              0.107467    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.724 on 10158 degrees of freedom
-  (323 observations deleted due to missingness)
-Multiple R-squared:  0.08902,   Adjusted R-squared:  0.08722 
-F-statistic: 49.63 on 20 and 10158 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code># A tibble: 8 × 5
+  term                                         estimate std.e…¹ stati…²  p.value
+  &lt;chr&gt;                                           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)                                   8.14e+0 1.08e-1   75.3  0       
+2 ownerGovernment                              -2.57e-1 9.59e-2   -2.68 7.40e- 3
+3 ownerNon profit                              -5.36e-1 5.05e-2  -10.6  4.17e-26
+4 Average.Number.of.Residents.per.Day           3.14e-3 4.11e-4    7.64 2.52e-14
+5 Adjusted.Total.Nurse.Staffing.Hours.per.Res… -3.82e-2 3.24e-2   -1.18 2.38e- 1
+6 Number.of.Citations.from.Infection.Control.…  2.76e-2 8.28e-3    3.34 8.46e- 4
+7 Total.Weighted.Health.Survey.Score            3.75e-4 2.90e-4    1.30 1.95e- 1
+8 Staffing.Rating                              -2.11e-1 2.28e-2   -9.26 2.73e-20
+# … with abbreviated variable names ¹​std.error, ²​statistic</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Applying the model to unseen test data</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(model_fit2, test_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,626 × 1
+   .pred
+   &lt;dbl&gt;
+ 1  7.36
+ 2  6.82
+ 3  7.69
+ 4  7.62
+ 5  7.84
+ 6  7.98
+ 7  8.10
+ 8  7.38
+ 9  7.88
+10  7.74
+# … with 2,616 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>model_aug2<span class="ot">&lt;-</span> <span class="fu">augment</span>(model_fit2, test_data)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co">#pull RS HAI Rate and predictions</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>temps <span class="ot">&lt;-</span> model_aug2 <span class="sc">%&gt;%</span> <span class="fu">pull</span>(HAI_039_RS_Rate)</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> model_aug2 <span class="sc">%&gt;%</span> <span class="fu">pull</span>(.pred)</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co">#run rmse</span></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_vec</span>(temps, pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.797092</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Selecting model 2 as final model</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Running on test data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>My key takeaways from these three models is that Model 2 and Model 3 have very similar R^2 fits. So they are likely not adding that much information by including both staffing rating and the staffing rate in the same model. Also, while less important, we see that staffing rate is not significantly associated with our outcome in this fully adjusted model.</p>
-<p>I think currently I am leaning towards choosing model 2 as a our final model for associations. This will allow us to draw conclusions about how staffing ratings are associated with healthcare associated infection rates.</p>
 </section>
 </section>
 

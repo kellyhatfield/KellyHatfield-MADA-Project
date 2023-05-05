@@ -106,10 +106,27 @@ ggsave(filename = figure_file, plot=p3b)
 Once more height as function of weight, stratified by ownership type.
 
 ```{r}
-p4 <- mydata %>% ggplot(aes(x=as.factor(Ownership.Type), y=HAI_039_RS_Rate)) + geom_boxplot() + geom_smooth(method='lm')
+
+mydata %>% count(Ownership.Type)
+
+mydata$owner <- substr(mydata$Ownership.Type, 1, 10)
+
+aggregate(mydata$Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day, list(mydata$owner), FUN=mean, na.rm=TRUE)
+aggregate(mydata$HAI_039_RS_Rate, list(mydata$owner), FUN=mean)
+
+
+p4 <- mydata %>% ggplot(aes(x=as.factor(owner), y=HAI_039_RS_Rate)) + geom_boxplot() + geom_smooth(method='lm')
 plot(p4)
-figure_file = here("results","staff_hai_ownership.png")
+figure_file = here("results","hai_ownership.png")
 ggsave(filename = figure_file, plot=p4) 
+
+view(mydata)
+p5 <- mydata %>% ggplot(aes(x=as.factor(owner), y=Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day)) + geom_boxplot() + geom_smooth(method='lm')
+plot(p5)
+figure_file = here("results","staff_ownership.png")
+ggsave(filename = figure_file, plot=p5) 
+
+
 ```
 
 # Changing our outcome
@@ -152,31 +169,16 @@ For this section I have decided I am going to assess if staffing rating adds add
 2.  Model with staffing rating and other covariates of interest (Ownership Type, Average Number of Residents per day, and staffing rating (the categorical value)
 3.  Model with both staffing rating and staffing rate + other covariates of interest
 
-#Applying the model to unseen test data
-
-predict(model_fit2, test_data)
-
-model_aug2\<- augment(model_fit1, test_data)
-
-#pull RS HAI Rate and predictions
-
-temps \<- model_aug2 %\>% pull(HAI_039_RS_Rate)
-
-pred \<- model_aug2 %\>% pull(.pred)
-
-#run rmse
-
-rmse_vec(temps, pred)
-
 ```{r}
 #Model 1
 
 
-recipe_1 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
+recipe_1 <- recipe(HAI_039_RS_Rate ~ owner + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
 
-recipe_2 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + as.factor(Staffing.Rating), data= train_data)
 
-recipe_3 <- recipe(HAI_039_RS_Rate ~ as.factor(Ownership.Type) + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + as.factor(Staffing.Rating), data= train_data)
+recipe_2 <- recipe(HAI_039_RS_Rate ~ owner + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + Staffing.Rating, data= train_data)
+
+recipe_3 <- recipe(HAI_039_RS_Rate ~ owner + Average.Number.of.Residents.per.Day + Adjusted.Total.Nurse.Staffing.Hours.per.Resident.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score + Staffing.Rating, data= train_data)
 
 
 #model: linear regression using GLM engine

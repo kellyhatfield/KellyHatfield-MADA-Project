@@ -41,13 +41,13 @@ ls(mydata)
 
 ### Descriptive stats: staff and HAI rate
 
-f2
-
-figure2 = here("results","Staff_prpd_distribution.png")
-
-ggsave(filename = figure2, plot=f2)
-
 ```{r}
+
+mydata$Staffing.Rating.F <- as.factor(mydata$Staffing.Rating)
+mydata$owner <- substr(mydata$Ownership.Type, 1, 10)
+
+
+
 
 mean(mydata$HAI_039_RS_Rate)
 
@@ -64,7 +64,7 @@ p1 <- mydata %>% ggplot(aes(x=HAI_039_RS_Rate)) + geom_histogram() + labs(
 
 
 figure_file = here("results","RiskStandardized_HAI_Rate_distribution.png")
-ggsave(filename = figure1, plot=p1) 
+ggsave(filename = figure_file, plot=p1) 
 
 mydata %>%
   group_by(COMP_PERF) %>% summarise( n = n(), percent=n()/sum(n()),
@@ -129,13 +129,8 @@ vp4a <- ggplot(mydata, aes(x=as.factor(COMP_PERF), y=Adjusted.Total.Nurse.Staffi
 figure4 = here("results","staffingrate_HAIgroup.png")
 ggsave(filename = figure4, plot=vp4a) 
 
+vp4a
 
-###### Save for later ######
-mytitlef4b <- "Figure: Relationship of adjusted HAI rate with Staffing Rating by nursing home"
-vp4b <- ggplot(mydata, aes(x=as.factor(Staffing.Rating), y=HAI_039_RS_Rate)) + labs(x = " ", y = "Adjusted HAI Rate", title=  str_wrap(mytitlef4b, 75))+ geom_violin(trim=FALSE) +  stat_summary(fun = "mean",
-               geom = "point",
-               color = "red")
-vp4b
 
 
 ```
@@ -146,8 +141,6 @@ vp4b
 # This enables the analysis to be reproducible when random numbers are used 
 set.seed(555)
 
-mydata$Staffing.Rating.F <- as.factor(mydata$Staffing.Rating)
-
 # Put 3/4 of the data into the training set 
 data_split <- initial_split(mydata, prop = 3/4)
 
@@ -156,7 +149,7 @@ train_data <- training(data_split)
 test_data  <- testing(data_split)
 
 
-recipe_2 <- recipe(HAI_039_RS_Rate ~ Staffing.Rating  + Ownership.Type + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
+recipe_2 <- recipe(HAI_039_RS_Rate ~ Staffing.Rating  + owner + Average.Number.of.Residents.per.Day + Number.of.Citations.from.Infection.Control.Inspections + Total.Weighted.Health.Survey.Score, data= train_data)
 
 #model: linear regression using GLM engine
 ln_mod <- linear_reg() %>% set_engine ("lm")
@@ -183,9 +176,19 @@ pred <- model_aug2 %>% pull(.pred)
 rmse_vec(temps, pred)
 
 
+mytitlescat <- "Observed and Predicted HAI Rates from Test Model"
+scatter_model <- ggplot(model_aug2, aes(x=.pred, y=HAI_039_RS_Rate)) + labs(x = "Predicted Rate ", y = "Adjusted HAI Rate", title=  str_wrap(mytitlescat, 75))+ geom_point() +geom_abline() + stat_cor(method="pearson", label.x=6, label.y=20)
+scatter_model
+
+figure5 = here("results","scatter_model.png")
+ggsave(filename = figure5, plot=scatter_model) 
+
+
 
 #Looking at model output on all of the data
-wflow2 %>%  fit(data = mydata) %>% extract_fit_parsnip() %>%  tidy()
+table2save<- wflow2 %>%  fit(data = mydata) %>% extract_fit_parsnip() %>%  tidy()
+table2 = here("results", "table2.RDS")
+saveRDS(table2save, file=table2) 
 ```
 
 # Appendix

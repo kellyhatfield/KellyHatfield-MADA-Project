@@ -40,6 +40,10 @@ CMS also calculates quality measures star rating. This assess different measures
 
 Previous studies have shown that certain staffing metrics are associated with lower quality metrics in US nursing homes [@mukamel2023association, @mukamel2022daily]. However, they were limited because they did not assess healthcare associated infections requiring hospitalization. We aim to assess the association of nursing home staff star ratings with the healthcare associated infection rate in participating nursing homes.
 
+## Hypothesis
+
+The hypothesis of this study is that nursing homes with higher staffing rates and higher five-star staffing rate will be associated with lower healthcare associated infections requiring hospitalizations. We further hypothesize that models will show that actual staffing rates will be a better variable for predicting infection rates than five-star staffing ratings.
+
 {{< pagebreak >}}
 
 # Methods
@@ -53,6 +57,12 @@ First, the provider information file contains general information on currently a
 Second, we addend the provider information with aggregated data reported as part of the Skilled Nursing Facility Quality Reporting Program. CMS aggregates data from the over 15,000 certified nursing homes for a number of quality metrics. They provide these metrics on their Care Compare site referenced above.
 
 The primary QRP metric of interest for this study is titled S_039_01: Percentage of patients who acquired a healthcare-associated infection during their SNF stay that resulted in hospitalization. This percentage is shown both as the observed rate and as a risk standardized rate. The HAI requiring hospitalization metric is also given as a categorical variable, where the nursing home is compared to all other nursing homes in that time period and categorized as average, significantly worse than average, or significantly better than average.
+
+## Exploratory analysis
+
+First, we looked through the distribution of all the variables we may utilize in our study. Visually, we examined histograms, box plots, and other representations of the distribution. We then looked at how our continuous variables were distributed by the categorical staffing star metric, or by the HAI rate categorization.
+
+In our exploratory analysis, we noticed missing values for some variables. Otherwise values were plausible and in range.
 
 ## Data cleaning
 
@@ -74,9 +84,11 @@ To create our multivariable models and assess their ability for prediction, we f
 
 ## Exploratory/Descriptive analysis
 
-From all data, we identified 10,502 nursing homes with complete data to include in our analysis. Complete description of the cohort included in the study in the Supplementary Files.
+Our exploratory analysis showed us fairly normal distributions of the risk standardized HAI requiring hospitalization rate and staffing variables. We noticed expected and appropriate correlation with the continuous rate variables and their categorical rankings. For example, as the number of staffing hours per resident per day increased, the staffing star rating also increased.
 
-Distributions of all variables are included in the Appendix.
+For interpretation, we reduced the \>10 ownership categories into Non-profit, For-profit, and Government. We saw potentially lower HAI rates in non-profit (7.00) compared to for-profit (7.9) nursing homes, with government-owned homes falling in the middle (7.4). Conversely, staffing rates were highest in non-profit nursing homes (4.2) compared to for-profit nursing homes (3.5), again with government in the middle (3.8).
+
+From all data, we identified 10,502 nursing homes with complete data to include in our analysis. Some of these nursing homes were missing some staffing data.
 
 ## Statistical analysis
 
@@ -140,23 +152,28 @@ knitr::include_graphics(here("results","staffingrate_HAIgroup.png"))
 
 For our training data, we selected 75% of the data which represented XX nursing homes. We compared three linear regression models with the outcome of risk adjusted HAI rate. The predictor of interest in the first model was the the total average staffing per resident per day and staffing **rating,** a numeric score from 1 - 5 stars. The predictor of interest for the second model was the average total staffing per resident per day score. For the third model we considered both the staffing rating and the average total staffing measure as the predictors of interest.
 
-We compared the three models using RMSE to determine which model best fit our data in the training dataset. The comparable RMSE rates are shown in Table 2.
-
-***#Add R Code here to show Table 2 (RMSE for different model choices 1,2,3)***
-
-We selected model 1, containing only the staffing rating as our best fitting model.When we applied model 1 to our test data we found that the predicted and observed values were fairly similar (Figure 5) and the RMSE was 1.79.
-
-***#Add R Code here to show Figure 5***
-
-For model 1, we found that in our training dataset the parameter estimate for staffing rating was -0.2. This can be interpreted as for each increase in staffing rating, the adjusted HAI rate decreases by 0.2, while adjusting for other nursing home characteristics. When we ran model 2 on our full dataset, we also got a parameter estimate of -0.2. This gives us confidence that our conclusions from model 1 are robust.
+In our exploratory analysis, we compared the three models using RMSE to determine which model best fit our data in the training dataset. We selected model 1, containing only the staffing rating as our best fitting model.When we applied model 1 to our test data we found that the predicted and observed values were fairly similar (Figure 5) and the RMSE was 1.79.
 
 ```{r}
-#| label: tbl-summarytable
-#| tbl-cap: "Data summary table."
+#| label: fig-result5
+#| fig-cap: "Scatter plot of observed versus predicted values in test data"
 #| echo: FALSE
-resulttable=readRDS("../../results/summarytable.rds")
-knitr::kable(resulttable)
+knitr::include_graphics(here("results","scatter_model.png"))
 ```
+
+### 
+
+The parameter estimates from the model applied to the full dataset are shown in Table 2.
+
+```{r}
+#| label: Table 2
+#| fig-cap: "Table showing parameter estimates from selected model on full dataset"
+#| echo: FALSE
+resulttable2=readRDS("../../results/table2.RDS")
+knitr::kable(resulttable2)
+```
+
+For model 1, we found that in our training dataset the parameter estimate for staffing rating was -0.2. This can be interpreted as for each increase in staffing rating, the adjusted HAI rate decreases by 0.2, while adjusting for other nursing home characteristics. When we ran model 2 on our full dataset, we also got a parameter estimate of -0.2. This gives us confidence that our conclusions from model 1 are robust.
 
 {{< pagebreak >}}
 
@@ -178,9 +195,7 @@ Assessment of quality in nursing home settings is limited by the quality of the 
 
 ## Conclusions
 
-*What are the main take-home messages?*
-
-*Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end*
+This analysis provides evidence that the risk standardized HAI metric may be able to elucidate important differences in quality of care in a nursing home setting. Further, it suggests that the five star staffing rating may be more informative than the staffing rate alone at predicting nursing homes with higher HAI rates. Nursing homes with inadequate staff should be provided additional resources to help ensure quality staffing is available to help keep residents safer from unnecessary harm.
 
 {{< pagebreak >}}
 
